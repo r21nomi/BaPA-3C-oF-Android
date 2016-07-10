@@ -1,0 +1,7 @@
+set solib-search-path /Users/a12690/workspace/openframeworks/of_v0.9.3_android_release/apps/bapa/bapaMockAndroid/obj/local/armeabi-v7a:/Users/a12690/workspace/openframeworks/of_v0.9.3_android_release/apps/bapa/bapaMockAndroid/libs/armeabi-v7a
+set sysroot /Users/a12690/android-ndk-r11b/platforms/android-19/arch-x86/
+directory /Users/a12690/android-ndk-r11b/platforms/android-19/arch-arm/usr/include
+directory /Users/a12690/workspace/openframeworks/of_v0.9.3_android_release/apps/bapa/bapaMockAndroid/src
+directory /Users/a12690/android-ndk-r11b/sources/cxx-stl/system
+directory /Users/a12690/workspace/openframeworks/of_v0.9.3_android_release/apps/bapa/bapaMockAndroid/libs/armeabi-v7a
+
