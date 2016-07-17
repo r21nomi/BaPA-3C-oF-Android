@@ -1,9 +1,15 @@
 package cc.openframeworks.bapaMockAndroid;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.concurrent.TimeUnit;
 
 import cc.openframeworks.OFAndroid;
 
@@ -11,6 +17,8 @@ import cc.openframeworks.OFAndroid;
 public class OFActivity extends cc.openframeworks.OFActivity{
 
     private OFAndroid ofApp;
+    private LocationManager locationManager;
+    private Location location;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -18,6 +26,32 @@ public class OFActivity extends cc.openframeworks.OFActivity{
         String packageName = getPackageName();
 
         ofApp = new OFAndroid(packageName,this);
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                TimeUnit.SECONDS.toMillis(3),
+                10,
+                new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+                        OFActivity.this.location = location;
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
     }
 
     @Override

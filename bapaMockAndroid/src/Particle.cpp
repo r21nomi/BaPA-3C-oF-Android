@@ -24,31 +24,41 @@ void Particle::update(float x, float y, float velocityX, float velocityY) {
 
     radius = defaultRadius * ofMap(sin(ofGetFrameNum() * bounceVelocity), -1, 1, 0.5, 1.2);
 
-    speedX += velocityX;
-    pos.x += speedX * acceleration;
-    speedY += -velocityY;
-    pos.y += speedY * acceleration;
+    //speedX += velocityX;
+    //pos.x += speedX * acceleration;
+    //speedY += -velocityY;
+    //pos.y += speedY * acceleration;
 
-    if (pos.x < radius / 2) {
-        pos.x = radius / 2;
-        speedX = defSpeed;
+    //if (pos.x < radius / 2) {
+    //    pos.x = radius / 2;
+    //    speedX = defSpeed;
 
-    } else if (pos.x > ofGetWidth() - radius / 2) {
-        pos.x = ofGetWidth() - radius / 2;
-        speedX = defSpeed;
+    //} else if (pos.x > ofGetWidth() - radius / 2) {
+    //    pos.x = ofGetWidth() - radius / 2;
+    //    speedX = defSpeed;
+    //}
+    //if (pos.y < radius / 2) {
+    //    pos.y = radius / 2;
+    //    speedY = defSpeed;
+
+    //} else if (pos.y > ofGetHeight() - radius / 2) {
+    //    pos.y = ofGetHeight() - radius / 2;
+    //    speedY = defSpeed;
+    //}
+
+    pos.x += dirX * 1;
+    pos.y += dirY * 1;
+
+    if (pos.x < radius / 2 || pos.x > ofGetWidth() - radius / 2) {
+        dirX *= -1;
     }
-    if (pos.y < radius / 2) {
-        pos.y = radius / 2;
-        speedY = defSpeed;
-
-    } else if (pos.y > ofGetHeight() - radius / 2) {
-        pos.y = ofGetHeight() - radius / 2;
-        speedY = defSpeed;
+    if (pos.y < radius / 2 || pos.y > ofGetHeight() - radius / 2) {
+        dirY *= -1;
     }
 }
 
 void Particle::draw() {
-    ofSetColor(255, 255, 255, 60);
+    ofSetColor(255, 255, 0, 60);
     ofPushMatrix();
 
     ofTranslate(pos.x, pos.y);
