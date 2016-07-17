@@ -31,7 +31,8 @@ void ofApp::update(){
     dummyLocation.y += velocity.y;
 
     for (Particle *particle : particles) {
-        particle->update(dummyLocation.x, dummyLocation.y, normAccel.x, normAccel.y);
+        // Use Z axis to make the origin the state of standing.
+        particle->update(dummyLocation.x, dummyLocation.y, normAccel.x, normAccel.z);
     }
 }
 
@@ -42,9 +43,9 @@ void ofApp::draw(){
     }
 
     ofSetColor(255, 255, 255);
-    font.drawString("x : " + ofToString(accel.x), 10, 30);
-    font.drawString("y : " + ofToString(accel.y), 10, 60);
-    font.drawString("z : " + ofToString(accel.z), 10, 90);
+    font.drawString("x : " + ofToString(normAccel.x), 10, 30);
+    font.drawString("y : " + ofToString(normAccel.y), 10, 60);
+    font.drawString("z : " + ofToString(normAccel.z), 10, 90);
     font.drawString("latitude : " + ofToString(latitude), 10, 120);
     font.drawString("longitude : " + ofToString(longitude), 10, 150);
     font.drawString("speed : " + ofToString(speed), 10, 180);

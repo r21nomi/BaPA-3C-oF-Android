@@ -30,6 +30,8 @@ private:
     float speedY;
     float defSpeed;
     float acceleration;
+    float offsetX;
+    float offsetY;
     ofImage *image;
 };
 
