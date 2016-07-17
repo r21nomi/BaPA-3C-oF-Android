@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxAndroid.h"
 #include "Particle.hpp"
+#include "Fish.hpp"
 #include "ofxAccelerometer.h"
 
 #include "ofxAndroidGPS.h"
@@ -60,7 +61,7 @@ class ofApp : public ofxAndroidApp{
     private:
             void createItems();
             float getVelocity(float destination, float location, float velocity);
-            vector <Particle*> particles;
+            vector <Item*> particles;
             ofImage img1;
             float stiffness;
             float damping;

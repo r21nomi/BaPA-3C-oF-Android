@@ -10,13 +10,14 @@
 #define Particle_hpp
 
 #include "ofMain.h"
+#include "Item.hpp"
 
-class Particle {
+class Particle : public Item {
 public:
     Particle(ofImage *image, ofPoint pos, float radius);
-    void update(float x, float y, float velocityX, float velocityY);
-    void draw();
-    ofPoint getLocation();
+    virtual void update(float x, float y, float velocityX, float velocityY);
+    virtual void draw();
+    virtual ofPoint getLocation();
 private:
     float getDir();
     ofPoint pos;

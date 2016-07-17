@@ -11,7 +11,7 @@ void ofApp::setup(){
     ofRegisterGPSEvent(this);
     ofxAndroidGPS::startGPS();
 
-    img1.load("images/img5_1.png");
+    img1.load("images/fish_100.png");
     img1.setAnchorPercent(0.5, 0.5);
 
     stiffness = 0.1;
@@ -30,7 +30,7 @@ void ofApp::update(){
     velocity.y = getVelocity(destination.y, dummyLocation.y, velocity.y);
     dummyLocation.y += velocity.y;
 
-    for (Particle *particle : particles) {
+    for (Item *particle : particles) {
         // Use Z axis to make the origin the state of standing.
         particle->update(dummyLocation.x, dummyLocation.y, normAccel.x, normAccel.z);
     }
@@ -38,7 +38,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    for (Particle *particle : particles) {
+    for (Item *particle : particles) {
         particle->draw();
     }
 
@@ -149,7 +149,8 @@ void ofApp::createItems() {
     float margin = 0;
     for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
         for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
-            Particle *particle = new Particle(&img1, ofPoint(i * (width + margin), j * (width + margin)), width);
+            //Item *particle = new Particle(&img1, ofPoint(i * (width + margin), j * (width + margin)), width);
+            Item *particle = new Fish(&img1, ofPoint(i * (width + margin), j * (width + margin)), width);
             float dist = ofDist(particle->getLocation().x, particle->getLocation().y, ofGetWidth() / 2, ofGetHeight() / 2);
 
             if (dist < ofGetHeight() / 2) {
