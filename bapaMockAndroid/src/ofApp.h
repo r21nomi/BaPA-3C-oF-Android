@@ -7,6 +7,7 @@
 #include "ofxAccelerometer.h"
 
 #include "ofxAndroidGPS.h"
+#include "ofxAndroidUtils.h"
 
 //#ifndef TARGET_ANDROID
 //struct ofxLocation{
@@ -61,8 +62,11 @@ class ofApp : public ofxAndroidApp{
     private:
             void createItems();
             float getVelocity(float destination, float location, float velocity);
+            void setGraphicId();
+            int getId();
             vector <Item*> particles;
-            ofImage img1;
+            vector<string> imageRefs;
+            ofImage img;
             float stiffness;
             float damping;
             ofPoint destination;
@@ -71,4 +75,5 @@ class ofApp : public ofxAndroidApp{
             ofVec3f accel, normAccel;
             float latitude, longitude, speed;
             ofTrueTypeFont font;
+            int graphicId;
 };

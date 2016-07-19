@@ -4,6 +4,8 @@
 void ofApp::setup(){
     ofBackground(0);
 
+    ofLog(OF_LOG_NOTICE, "setup -----------------------------------------");
+
     font.load("verdana.ttf", 24);
 
     ofxAccelerometer.setup();
@@ -11,8 +13,15 @@ void ofApp::setup(){
     ofRegisterGPSEvent(this);
     ofxAndroidGPS::startGPS();
 
-    img1.load("images/fish_100.png");
-    img1.setAnchorPercent(0.5, 0.5);
+    setGraphicId();
+
+    imageRefs.push_back("images/fish_100_0.png");
+    imageRefs.push_back("images/fish_100_1.png");
+    imageRefs.push_back("images/fish_100_2.png");
+    imageRefs.push_back("images/fish_100_3.png");
+    imageRefs.push_back("images/fish_100_4.png");
+    img.load(imageRefs[graphicId]);
+    img.setAnchorPercent(0.5, 0.5);
 
     stiffness = 0.1;
     damping = 0.85;
@@ -63,7 +72,7 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-
+    ofLog(OF_LOG_NOTICE, "windowResized");
 }
 
 //--------------------------------------------------------------
@@ -99,26 +108,31 @@ void ofApp::swipe(ofxAndroidSwipeDir swipeDir, int id){
 
 //--------------------------------------------------------------
 void ofApp::pause(){
-
+    ofLog(OF_LOG_NOTICE, "pause");
 }
 
 //--------------------------------------------------------------
 void ofApp::stop(){
-
+    ofLog(OF_LOG_NOTICE, "stop");
 }
 
 //--------------------------------------------------------------
 void ofApp::resume(){
-
+    ofLog(OF_LOG_NOTICE, "resume");
 }
 
 //--------------------------------------------------------------
 void ofApp::reloadTextures(){
-
+    ofLog(OF_LOG_NOTICE, "reloadTextures");
+    setGraphicId();
+    img.clear();
+    img.load(imageRefs[graphicId]);
+    createItems();
 }
 
 //--------------------------------------------------------------
 bool ofApp::backPressed(){
+    ofLog(OF_LOG_NOTICE, "backPressed");
     return false;
 }
 
@@ -149,8 +163,14 @@ void ofApp::createItems() {
     float margin = 0;
     for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
         for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
-            //Item *particle = new Particle(&img1, ofPoint(i * (width + margin), j * (width + margin)), width);
-            Item *particle = new Fish(&img1, ofPoint(i * (width + margin), j * (width + margin)), width);
+            Item *particle;
+
+            if (graphicId == 1) {
+                particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
+            } else {
+                particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
+            }
+
             float dist = ofDist(particle->getLocation().x, particle->getLocation().y, ofGetWidth() / 2, ofGetHeight() / 2);
 
             if (dist < ofGetHeight() / 2) {
@@ -163,4 +183,44 @@ void ofApp::createItems() {
 float ofApp::getVelocity(float destination, float location, float velocity) {
     float force = stiffness * (destination - location);
     return damping * (velocity + force);
+}
+
+void ofApp::setGraphicId() {
+    graphicId = getId();
+    ofLog(OF_LOG_NOTICE, "ID : " + ofToString(graphicId));
+}
+
+/**
+ * Get ID using getId method which OFActivity has.
+ */
+int ofApp::getId() {
+    // Get env.
+    JNIEnv *env = ofGetJNIEnv();
+    if (!env) {
+        ofLogError() << "Couldn't get environment using GetEnv()." << endl;
+        return -1;
+    }
+
+    // Find reference for OFActivity.
+    jclass localClass = env->FindClass("cc/openframeworks/bapaMockAndroid/OFActivity");
+    jclass javaClass = (jclass) env->NewGlobalRef(localClass);
+    if(!javaClass){
+        ofLogError() << "Couldn't get java class for OFActivity." << endl;
+        return -1;
+    }
+    jobject javaObject = ofGetOFActivityObject();
+    javaObject = (jobject) env->NewGlobalRef(javaObject);
+    if (!javaObject) {
+        ofLogError() << "javaObject not found." << endl;
+        return -1;
+    }
+
+    // Find getId method from OFActivity.
+    jmethodID javaGetIdMethod = env->GetMethodID(javaClass,"getId","()I");
+    if(!javaGetIdMethod){
+        ofLogError() << "Couldn't get java getId from OFActivity." << endl;
+        return -1;
+    }
+
+    return env->CallIntMethod(javaObject, javaGetIdMethod);
 }
