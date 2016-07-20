@@ -41,7 +41,7 @@ void ofApp::update(){
 
     for (Item *particle : particles) {
         // Use Z axis to make the origin the state of standing.
-        particle->update(dummyLocation.x, dummyLocation.y, normAccel.x, normAccel.z);
+        particle->update(dummyLocation.x, dummyLocation.y, normAccel.x * 1.5, normAccel.z * 1.5);
     }
 }
 
