@@ -19,6 +19,13 @@ class Fish : public Item {
         ofImage *image;
         ofPoint pos;
         float radius;
+        float angle;
+        float speedX;
+        float speedY;
+        float offsetX;
+        float offsetY;
+        float defSpeed;
+        float bounceVelocity;
 };
 
 
