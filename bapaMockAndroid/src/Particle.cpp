@@ -13,8 +13,10 @@ Particle::Particle(ofImage *_image, ofPoint _pos, float _radius) {
     pos = _pos;
     radius = defaultRadius = _radius;
     bounceVelocity = ofRandom(0.05, 0.1);
+    offsetX = ofRandom(10, 30);
+    offsetY = ofRandom(10, 30);
     speedX = speedY = defSpeed = 0;
-    acceleration = 1.3;
+    acceleration = 0.1;
     dirX = getDir();
     dirY = getDir();
 }
@@ -24,36 +26,35 @@ void Particle::update(float x, float y, float velocityX, float velocityY) {
 
     radius = defaultRadius * ofMap(sin(ofGetFrameNum() * bounceVelocity), -1, 1, 0.5, 1.2);
 
-    //speedX += velocityX;
-    //pos.x += speedX * acceleration;
-    //speedY += -velocityY;
-    //pos.y += speedY * acceleration;
+    float targetX = ofGetWidth() / 2 + ofGetWidth() / 2 * velocityX;
+    float targetY = ofGetHeight() / 2 + ofGetHeight() / 2 * velocityY;
 
-    //if (pos.x < radius / 2) {
-    //    pos.x = radius / 2;
-    //    speedX = defSpeed;
+    // X
+    float radX = ofDegToRad(ofMap(velocityX, -1, 1, 180, 0));
+    float radiusX = (offsetX * sin(radX));
+    pos.x += (targetX - pos.x) * bounceVelocity * 0.7 + radiusX * cos(ofGetFrameNum() * bounceVelocity * 0.5);
 
-    //} else if (pos.x > ofGetWidth() - radius / 2) {
-    //    pos.x = ofGetWidth() - radius / 2;
-    //    speedX = defSpeed;
-    //}
-    //if (pos.y < radius / 2) {
-    //    pos.y = radius / 2;
-    //    speedY = defSpeed;
+    // Y
+    float radY = ofDegToRad(ofMap(velocityY, -1, 1, 180, 0));
+    float radiusY = (offsetY * sin(radY));
+    pos.y += (targetY - pos.y) * bounceVelocity * 0.7 + radiusY * sin(ofGetFrameNum() * bounceVelocity * 0.5);
 
-    //} else if (pos.y > ofGetHeight() - radius / 2) {
-    //    pos.y = ofGetHeight() - radius / 2;
-    //    speedY = defSpeed;
-    //}
+    // Edge
+    if (pos.x < radius / 2) {
+        pos.x = radius / 2;
+        speedX = defSpeed;
 
-    pos.x += dirX * 1;
-    pos.y += dirY * 1;
-
-    if (pos.x < radius / 2 || pos.x > ofGetWidth() - radius / 2) {
-        dirX *= -1;
+    } else if (pos.x > ofGetWidth() - radius / 2) {
+        pos.x = ofGetWidth() - radius / 2;
+        speedX = defSpeed;
     }
-    if (pos.y < radius / 2 || pos.y > ofGetHeight() - radius / 2) {
-        dirY *= -1;
+    if (pos.y < radius / 2) {
+        pos.y = radius / 2;
+        speedY = defSpeed;
+
+    } else if (pos.y > ofGetHeight() - radius / 2) {
+        pos.y = ofGetHeight() - radius / 2;
+        speedY = defSpeed;
     }
 }
 
