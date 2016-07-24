@@ -65,6 +65,14 @@ class ofApp : public ofxAndroidApp{
             void setGraphicId();
             int getId();
             float getAzimuth();
+            JNIEnv* getEnv();
+            jclass getOFActivityClass(JNIEnv *env);
+            jobject getOFActivityObject(JNIEnv *env);
+
+            JNIEnv* env;
+            jclass ofActivityClass;
+            jobject ofActivityObject;
+
             vector <Item*> particles;
             vector<string> imageRefs;
             ofImage img;

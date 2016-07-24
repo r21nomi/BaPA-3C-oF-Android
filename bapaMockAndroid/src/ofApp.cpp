@@ -192,68 +192,95 @@ void ofApp::setGraphicId() {
 }
 
 /**
+ * Get env.
+ */
+JNIEnv* ofApp::getEnv() {
+    if (env != NULL) {
+        return env;
+    }
+    JNIEnv *e = ofGetJNIEnv();
+    if (!e) {
+        ofLogError() << "Couldn't get environment using GetEnv()." << endl;
+        return NULL;
+    }
+
+    env = e;
+
+    return env;
+}
+
+/**
+ * Get OFActivity class.
+ */
+jclass ofApp::getOFActivityClass(JNIEnv *env) {
+    if (ofActivityClass != NULL) {
+        return ofActivityClass;
+    }
+    // Find reference for OFActivity.
+    jclass localClass = env->FindClass("cc/openframeworks/bapaMockAndroid/OFActivity");
+    jclass javaClass = (jclass) env->NewGlobalRef(localClass);
+    if(!javaClass){
+        ofLogError() << "Couldn't get java class for OFActivity." << endl;
+        return NULL;
+    }
+
+    ofActivityClass = javaClass;
+
+    return ofActivityClass;
+}
+
+/**
+ * Get OFActivity object.
+ */
+jobject ofApp::getOFActivityObject(JNIEnv *env) {
+    if (ofActivityObject != NULL) {
+        return ofActivityObject;
+    }
+    jobject javaObject = ofGetOFActivityObject();
+    javaObject = (jobject) env->NewGlobalRef(javaObject);
+    if (!javaObject) {
+        ofLogError() << "javaObject not found." << endl;
+        return NULL;
+    }
+
+    ofActivityObject = javaObject;
+
+    return ofActivityObject;
+}
+
+/**
  * Get ID using getId method which OFActivity has.
  */
 int ofApp::getId() {
-    // Get env.
-    JNIEnv *env = ofGetJNIEnv();
-    if (!env) {
-        ofLogError() << "Couldn't get environment using GetEnv()." << endl;
-        return -1;
-    }
-
-    // Find reference for OFActivity.
-    jclass localClass = env->FindClass("cc/openframeworks/bapaMockAndroid/OFActivity");
-    jclass javaClass = (jclass) env->NewGlobalRef(localClass);
-    if(!javaClass){
-        ofLogError() << "Couldn't get java class for OFActivity." << endl;
-        return -1;
-    }
-    jobject javaObject = ofGetOFActivityObject();
-    javaObject = (jobject) env->NewGlobalRef(javaObject);
-    if (!javaObject) {
-        ofLogError() << "javaObject not found." << endl;
-        return -1;
-    }
+    JNIEnv *env = getEnv();
+    jclass ofActivityClass = getOFActivityClass(env);
+    jobject ofActivityObject = getOFActivityObject(env);
 
     // Find getId method from OFActivity.
-    jmethodID javaGetIdMethod = env->GetMethodID(javaClass,"getId","()I");
+    jmethodID javaGetIdMethod = env->GetMethodID(ofActivityClass, "getId","()I");
     if(!javaGetIdMethod){
         ofLogError() << "Couldn't get java getId from OFActivity." << endl;
         return -1;
     }
 
-    return env->CallIntMethod(javaObject, javaGetIdMethod);
+    int val = env->CallIntMethod(ofActivityObject, javaGetIdMethod);
+
+    return val;
 }
 
 float ofApp::getAzimuth() {
-    // Get env.
-    JNIEnv *env = ofGetJNIEnv();
-    if (!env) {
-        ofLogError() << "Couldn't get environment using GetEnv()." << endl;
-        return -1;
-    }
-
-    // Find reference for OFActivity.
-    jclass localClass = env->FindClass("cc/openframeworks/bapaMockAndroid/OFActivity");
-    jclass javaClass = (jclass) env->NewGlobalRef(localClass);
-    if(!javaClass){
-        ofLogError() << "Couldn't get java class for OFActivity." << endl;
-        return -1;
-    }
-    jobject javaObject = ofGetOFActivityObject();
-    javaObject = (jobject) env->NewGlobalRef(javaObject);
-    if (!javaObject) {
-        ofLogError() << "javaObject not found." << endl;
-        return -1;
-    }
+    JNIEnv *env = getEnv();
+    jclass ofActivityClass = getOFActivityClass(env);
+    jobject ofActivityObject = getOFActivityObject(env);
 
     // Find getId method from OFActivity.
-    jmethodID javaGetIdMethod = env->GetMethodID(javaClass,"getAzimuth","()F");
+    jmethodID javaGetIdMethod = env->GetMethodID(ofActivityClass, "getAzimuth","()F");
     if(!javaGetIdMethod){
         ofLogError() << "Couldn't get java getId from OFActivity." << endl;
         return -1;
     }
 
-    return env->CallFloatMethod(javaObject, javaGetIdMethod);
+    float val = env->CallFloatMethod(ofActivityObject, javaGetIdMethod);
+
+    return val;
 }
