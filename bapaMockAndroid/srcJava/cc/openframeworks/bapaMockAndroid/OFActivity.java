@@ -2,6 +2,10 @@ package cc.openframeworks.bapaMockAndroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -17,6 +21,15 @@ public class OFActivity extends cc.openframeworks.OFActivity{
 
     private OFAndroid ofApp;
     private int id;
+
+    private SensorManager mSensorManager = null;
+    private SensorEventListener mSensorEventListener = null;
+
+    private float[] fAccell = null;
+    private float[] fMagnetic = null;
+    private float azimuth;
+    private float pitch;
+    private float roll;
 
     public static Intent createIntent(Context context, int id) {
         Intent intent = new Intent(context, OFActivity.class);
@@ -40,11 +53,13 @@ public class OFActivity extends cc.openframeworks.OFActivity{
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        initSensor();
     }
 
     @Override
     public void onDetachedFromWindow() {
-
+        // no-op
     }
 
     @Override
@@ -54,9 +69,33 @@ public class OFActivity extends cc.openframeworks.OFActivity{
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        mSensorManager.registerListener(
+                mSensorEventListener,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_UI
+        );
+
+        mSensorManager.registerListener(
+                mSensorEventListener,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_UI
+        );
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         ofApp.pause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        mSensorManager.unregisterListener( mSensorEventListener );
     }
 
     @Override
@@ -112,5 +151,67 @@ public class OFActivity extends cc.openframeworks.OFActivity{
     // This will be called from oF.
     public int getId() {
         return id;
+    }
+
+    // This will be called from oF.
+    public float getAzimuth() {
+        return azimuth;
+    }
+
+    private void initSensor() {
+        mSensorManager = (SensorManager) getSystemService( Context.SENSOR_SERVICE );
+
+        mSensorEventListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged (SensorEvent event) {
+                switch (event.sensor.getType()) {
+                    case Sensor.TYPE_ACCELEROMETER:
+                        fAccell = event.values.clone();
+                        break;
+                    case Sensor.TYPE_MAGNETIC_FIELD:
+                        fMagnetic = event.values.clone();
+                        break;
+                }
+
+                if (fAccell != null && fMagnetic != null) {
+                    // Get RotationMatrix
+                    float[] inR = new float[9];
+                    SensorManager.getRotationMatrix(
+                            inR,
+                            null,
+                            fAccell,
+                            fMagnetic
+                    );
+
+                    // ワールド座標とデバイス座標のマッピングを変換する
+                    float[] outR = new float[9];
+                    SensorManager.remapCoordinateSystem(
+                            inR,
+                            SensorManager.AXIS_X, SensorManager.AXIS_Y,
+                            outR
+                    );
+
+                    // 姿勢を得る
+                    float[] fAttitude = new float[3];
+                    SensorManager.getOrientation(
+                            outR,
+                            fAttitude
+                    );
+
+                    azimuth = rad2deg(fAttitude[0]);
+                    pitch = rad2deg(fAttitude[1]);
+                    roll = rad2deg(fAttitude[2]);
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged (Sensor sensor, int accuracy) {
+                // no-op
+            }
+        };
+    }
+
+    private float rad2deg(float rad) {
+        return rad * (float) 180.0 / (float) Math.PI;
     }
 }

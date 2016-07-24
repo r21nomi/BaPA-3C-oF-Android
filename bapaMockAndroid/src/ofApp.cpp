@@ -58,6 +58,7 @@ void ofApp::draw(){
     font.drawString("latitude : " + ofToString(latitude), 10, 120);
     font.drawString("longitude : " + ofToString(longitude), 10, 150);
     font.drawString("speed : " + ofToString(speed), 10, 180);
+    font.drawString("getAzimuth : " + ofToString(getAzimuth()), 10, 210);
 }
 
 //--------------------------------------------------------------
@@ -223,4 +224,36 @@ int ofApp::getId() {
     }
 
     return env->CallIntMethod(javaObject, javaGetIdMethod);
+}
+
+float ofApp::getAzimuth() {
+    // Get env.
+    JNIEnv *env = ofGetJNIEnv();
+    if (!env) {
+        ofLogError() << "Couldn't get environment using GetEnv()." << endl;
+        return -1;
+    }
+
+    // Find reference for OFActivity.
+    jclass localClass = env->FindClass("cc/openframeworks/bapaMockAndroid/OFActivity");
+    jclass javaClass = (jclass) env->NewGlobalRef(localClass);
+    if(!javaClass){
+        ofLogError() << "Couldn't get java class for OFActivity." << endl;
+        return -1;
+    }
+    jobject javaObject = ofGetOFActivityObject();
+    javaObject = (jobject) env->NewGlobalRef(javaObject);
+    if (!javaObject) {
+        ofLogError() << "javaObject not found." << endl;
+        return -1;
+    }
+
+    // Find getId method from OFActivity.
+    jmethodID javaGetIdMethod = env->GetMethodID(javaClass,"getAzimuth","()F");
+    if(!javaGetIdMethod){
+        ofLogError() << "Couldn't get java getId from OFActivity." << endl;
+        return -1;
+    }
+
+    return env->CallFloatMethod(javaObject, javaGetIdMethod);
 }

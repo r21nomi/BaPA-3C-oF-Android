@@ -64,6 +64,7 @@ class ofApp : public ofxAndroidApp{
             float getVelocity(float destination, float location, float velocity);
             void setGraphicId();
             int getId();
+            float getAzimuth();
             vector <Item*> particles;
             vector<string> imageRefs;
             ofImage img;
