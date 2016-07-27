@@ -94,8 +94,9 @@ public class OFActivity extends cc.openframeworks.OFActivity{
     @Override
     protected void onStop() {
         super.onStop();
+        ofApp.stop();
 
-        mSensorManager.unregisterListener( mSensorEventListener );
+        mSensorManager.unregisterListener(mSensorEventListener);
     }
 
     @Override

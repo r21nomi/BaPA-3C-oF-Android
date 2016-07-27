@@ -68,6 +68,7 @@ class ofApp : public ofxAndroidApp{
             JNIEnv* getEnv();
             jclass getOFActivityClass(JNIEnv *env);
             jobject getOFActivityObject(JNIEnv *env);
+            void reset();
 
             JNIEnv* env;
             jclass ofActivityClass;

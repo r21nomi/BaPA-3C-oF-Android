@@ -59,6 +59,7 @@ void ofApp::draw(){
     font.drawString("longitude : " + ofToString(longitude), 10, 150);
     font.drawString("speed : " + ofToString(speed), 10, 180);
     font.drawString("getAzimuth : " + ofToString(getAzimuth()), 10, 210);
+    reset();
 }
 
 //--------------------------------------------------------------
@@ -134,6 +135,7 @@ void ofApp::reloadTextures(){
 //--------------------------------------------------------------
 bool ofApp::backPressed(){
     ofLog(OF_LOG_NOTICE, "backPressed");
+
     return false;
 }
 
@@ -188,6 +190,7 @@ float ofApp::getVelocity(float destination, float location, float velocity) {
 
 void ofApp::setGraphicId() {
     graphicId = getId();
+    reset();
     ofLog(OF_LOG_NOTICE, "ID : " + ofToString(graphicId));
 }
 
@@ -249,38 +252,53 @@ jobject ofApp::getOFActivityObject(JNIEnv *env) {
 }
 
 /**
+ * This should be called after NewGlobalRef was executed otherwise Fatal signal 11 (SIGSEGV) will happen.
+ */
+void ofApp::reset() {
+    JNIEnv *_env = getEnv();
+
+    // Delete reference
+    _env->DeleteGlobalRef(ofActivityObject);
+    _env->DeleteGlobalRef(ofActivityClass);
+
+    ofActivityObject = NULL;
+    ofActivityClass = NULL;
+    env = NULL;
+}
+
+/**
  * Get ID using getId method which OFActivity has.
  */
 int ofApp::getId() {
-    JNIEnv *env = getEnv();
-    jclass ofActivityClass = getOFActivityClass(env);
-    jobject ofActivityObject = getOFActivityObject(env);
+    JNIEnv *_env = getEnv();
+    jclass _ofActivityClass = getOFActivityClass(_env);
+    jobject _ofActivityObject = getOFActivityObject(_env);
 
     // Find getId method from OFActivity.
-    jmethodID javaGetIdMethod = env->GetMethodID(ofActivityClass, "getId","()I");
+    jmethodID javaGetIdMethod = _env->GetMethodID(_ofActivityClass, "getId","()I");
     if(!javaGetIdMethod){
         ofLogError() << "Couldn't get java getId from OFActivity." << endl;
         return -1;
     }
 
-    int val = env->CallIntMethod(ofActivityObject, javaGetIdMethod);
+    int val = _env->CallIntMethod(_ofActivityObject, javaGetIdMethod);
 
     return val;
 }
 
 float ofApp::getAzimuth() {
-    JNIEnv *env = getEnv();
-    jclass ofActivityClass = getOFActivityClass(env);
-    jobject ofActivityObject = getOFActivityObject(env);
+    JNIEnv *_env = getEnv();
+    jclass _ofActivityClass = getOFActivityClass(_env);
+    jobject _ofActivityObject = getOFActivityObject(_env);
 
     // Find getId method from OFActivity.
-    jmethodID javaGetIdMethod = env->GetMethodID(ofActivityClass, "getAzimuth","()F");
+    jmethodID javaGetIdMethod = _env->GetMethodID(_ofActivityClass, "getAzimuth","()F");
     if(!javaGetIdMethod){
         ofLogError() << "Couldn't get java getId from OFActivity." << endl;
         return -1;
     }
 
-    float val = env->CallFloatMethod(ofActivityObject, javaGetIdMethod);
+    float val = _env->CallFloatMethod(_ofActivityObject, javaGetIdMethod);
 
     return val;
 }
