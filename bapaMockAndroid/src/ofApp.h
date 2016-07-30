@@ -4,6 +4,7 @@
 #include "ofxAndroid.h"
 #include "Particle.hpp"
 #include "Fish.hpp"
+#include "Border.hpp"
 #include "ofxAccelerometer.h"
 
 #include "ofxAndroidGPS.h"
@@ -61,6 +62,7 @@ class ofApp : public ofxAndroidApp{
 
     private:
             void createItems();
+            void createBorderItems();
             float getVelocity(float destination, float location, float velocity);
             void setGraphicId();
             int getId();
