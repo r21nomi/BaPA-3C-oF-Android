@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include <algorithm>
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -20,6 +21,8 @@ void ofApp::setup(){
     imageRefs.push_back("images/fish_100_2.png");
     imageRefs.push_back("images/fish_100_3.png");
     imageRefs.push_back("images/fish_100_4.png");
+    imageRefs.push_back("images/cone_80_1.png");
+    imageRefs.push_back("images/eye_57_1.png");
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
@@ -160,27 +163,46 @@ void ofApp::locationChanged(ofxLocation& location) {
 }
 
 void ofApp::createItems() {
-    particles.clear();
+    if (graphicId == 2) {
+        createBorderItems();
+    } else {
+        particles.clear();
 
-    float width = 100;
-    float margin = 0;
-    for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
-        for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
-            Item *particle;
+        float width = 100;
+        float margin = 0;
+        for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
+            for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
+                Item *particle;
 
-            if (graphicId == 1) {
-                particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
-            } else {
-                particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
-            }
+                if (graphicId == 1) {
+                    particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
+                } else {
+                    particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
+                }
 
-            float dist = ofDist(particle->getLocation().x, particle->getLocation().y, ofGetWidth() / 2, ofGetHeight() / 2);
+                float dist = ofDist(particle->getLocation().x, particle->getLocation().y, ofGetWidth() / 2, ofGetHeight() / 2);
 
-            if (dist < ofGetHeight() / 2) {
-                particles.push_back(particle);
+                if (dist < ofGetHeight() / 2) {
+                    particles.push_back(particle);
+                }
             }
         }
     }
+}
+
+void ofApp::createBorderItems() {
+    particles.clear();
+
+    int bold = 30;
+    for (int i = 0, wLen = ofGetWidth(); (i + 1) * bold < wLen; i++) {
+        Item *particle = new Border(ofPoint(i * bold, 0), bold, ofGetHeight(), Border::HORIZONTAL);
+        particles.push_back(particle);
+    }
+    for (int j = 0, hLen = ofGetHeight(); (j + 1) * bold < hLen; j++) {
+        Item *particle = new Border(ofPoint(0, j * bold), ofGetWidth(), bold, Border::VERTICAL);
+        particles.push_back(particle);
+    }
+    random_shuffle(particles.begin(), particles.end());
 }
 
 float ofApp::getVelocity(float destination, float location, float velocity) {
