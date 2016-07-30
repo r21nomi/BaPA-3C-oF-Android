@@ -193,14 +193,21 @@ void ofApp::createItems() {
 void ofApp::createBorderItems() {
     particles.clear();
 
-    int bold = 30;
-    for (int i = 0, wLen = ofGetWidth(); (i + 1) * bold < wLen; i++) {
-        Item *particle = new Border(ofPoint(i * bold, 0), bold, ofGetHeight(), Border::HORIZONTAL);
+    int currentXLen = 0;
+    int currentYLen = 0;
+    // Horizontal
+    for (int i = 0, wLen = ofGetWidth(); currentXLen < wLen; i++) {
+        int bold = ofRandom(10, 80);
+        Item *particle = new Border(ofPoint(currentXLen, 0), bold, ofGetHeight(), ofRandom(5, 8), Border::HORIZONTAL);
         particles.push_back(particle);
+        currentXLen += bold;
     }
-    for (int j = 0, hLen = ofGetHeight(); (j + 1) * bold < hLen; j++) {
-        Item *particle = new Border(ofPoint(0, j * bold), ofGetWidth(), bold, Border::VERTICAL);
+    // Vertical
+    for (int j = 0, hLen = ofGetHeight(); currentYLen < hLen; j++) {
+        int bold = ofRandom(10, 80);
+        Item *particle = new Border(ofPoint(0, currentYLen), ofGetWidth(), bold, ofRandom(5, 8), Border::VERTICAL);
         particles.push_back(particle);
+        currentYLen += bold;
     }
     random_shuffle(particles.begin(), particles.end());
 }

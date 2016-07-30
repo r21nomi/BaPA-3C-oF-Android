@@ -14,7 +14,7 @@ class Border : public Item {
             VERTICAL,
             HORIZONTAL
         };
-        Border(ofPoint pos, float width, float height, Type type);
+        Border(ofPoint pos, float width, float height, float speed, Type type);
         virtual void update(float x, float y, float velocityX, float velocityY);
         virtual void draw();
         virtual ofPoint getLocation();
