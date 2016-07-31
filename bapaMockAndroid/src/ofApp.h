@@ -71,6 +71,7 @@ class ofApp : public ofxAndroidApp{
             jclass getOFActivityClass(JNIEnv *env);
             jobject getOFActivityObject(JNIEnv *env);
             void reset();
+            void changeGraphicIfNeeded();
 
             JNIEnv* env;
             jclass ofActivityClass;
@@ -88,4 +89,8 @@ class ofApp : public ofxAndroidApp{
             float latitude, longitude, speed;
             ofTrueTypeFont font;
             int graphicId;
+            int counter;
+            int changeDelay;
+            float lastAzimuth;
+            float diff;
 };

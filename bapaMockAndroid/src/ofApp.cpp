@@ -28,6 +28,7 @@ void ofApp::setup(){
 
     stiffness = 0.1;
     damping = 0.85;
+    counter = changeDelay = lastAzimuth = diff = 0;
     createItems();
 }
 
@@ -58,6 +59,8 @@ void ofApp::update(){
         }
         particle->update(dummyLocation.x, dummyLocation.y, accelX, accelY);
     }
+
+    changeGraphicIfNeeded();
 }
 
 //--------------------------------------------------------------
@@ -74,6 +77,8 @@ void ofApp::draw(){
     font.drawString("longitude : " + ofToString(longitude), 10, 150);
     font.drawString("speed : " + ofToString(speed), 10, 180);
     font.drawString("getAzimuth : " + ofToString(getAzimuth()), 10, 210);
+    font.drawString("Counter : " + ofToString(counter), 10, 240);
+    font.drawString("Diff : " + ofToString(diff), 10, 270);
     reset();
 }
 
@@ -233,6 +238,39 @@ void ofApp::setGraphicId() {
     graphicId = getId();
     reset();
     ofLog(OF_LOG_NOTICE, "ID : " + ofToString(graphicId));
+}
+
+void ofApp::changeGraphicIfNeeded() {
+    counter++;
+    changeDelay++;
+
+    if (counter > 20) {
+        float azimuth = getAzimuth();
+        float absDiff = ABS(lastAzimuth - azimuth);
+
+        if (absDiff > 30 && absDiff < 150 && changeDelay > 100) {
+            diff = lastAzimuth - azimuth;
+            changeDelay = 0;
+
+            if (diff > 0) {
+                graphicId++;
+                if (imageRefs.size() <= graphicId) {
+                    graphicId = 0;
+                }
+            } else {
+                graphicId--;
+                if (graphicId < 0) {
+                    graphicId = imageRefs.size() - 1;
+                }
+            }
+            reset();
+            img.clear();
+            img.load(imageRefs[graphicId]);
+            createItems();
+        }
+        lastAzimuth = azimuth;
+        counter = 0;
+    }
 }
 
 /**
