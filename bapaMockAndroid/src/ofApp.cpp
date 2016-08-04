@@ -182,6 +182,10 @@ void ofApp::locationChanged(ofxLocation& location) {
 void ofApp::createItems() {
     if (graphicId == 2) {
         createBorderItems();
+
+    } else if (graphicId == 3) {
+        createRippleItems();
+
     } else {
         particles.clear();
 
@@ -207,6 +211,9 @@ void ofApp::createItems() {
     }
 }
 
+/**
+ * Border
+ */
 void ofApp::createBorderItems() {
     particles.clear();
 
@@ -227,6 +234,24 @@ void ofApp::createBorderItems() {
         currentYLen += bold;
     }
     random_shuffle(particles.begin(), particles.end());
+}
+
+/**
+ * Ripple
+ */
+void ofApp::createRippleItems() {
+    particles.clear();
+
+    for (int i = 0, len = 50; i < len; i++) {
+        Item *ripple = new Ripple(
+            ofPoint(ofRandom(ofGetWidth()), ofRandom(ofGetHeight())),
+            8,
+            400,
+            (int)ofRandom(0, 1500),
+            ofColor(0, ofRandom(255), 255)
+        );
+        particles.push_back(ripple);
+    }
 }
 
 float ofApp::getVelocity(float destination, float location, float velocity) {
