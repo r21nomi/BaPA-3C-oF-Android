@@ -74,6 +74,10 @@ class ofApp : public ofxAndroidApp{
             jobject getOFActivityObject(JNIEnv *env);
             void reset();
             void changeGraphicIfNeeded();
+            void changeGraphic(bool changetoNext);
+            bool hasTimePassed();
+            void resetTime();
+            int getElapsedTime();
 
             JNIEnv* env;
             jclass ofActivityClass;
@@ -95,4 +99,6 @@ class ofApp : public ofxAndroidApp{
             int changeDelay;
             float lastAzimuth;
             float diff;
+            int startTime;
+            int timeUntilChangeGraphic;
 };
