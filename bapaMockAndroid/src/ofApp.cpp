@@ -29,11 +29,18 @@ void ofApp::setup(){
     stiffness = 0.1;
     damping = 0.85;
     counter = changeDelay = lastAzimuth = diff = 0;
+    timeUntilChangeGraphic = 10 * 1000;
+
+    resetTime();
     createItems();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    if (hasTimePassed()) {
+        changeGraphic(true);
+    }
+
     accel = ofxAccelerometer.getForce();
     normAccel = accel.getNormalized();
 
@@ -79,6 +86,7 @@ void ofApp::draw(){
     font.drawString("getAzimuth : " + ofToString(getAzimuth()), 10, 210);
     font.drawString("Counter : " + ofToString(counter), 10, 240);
     font.drawString("Diff : " + ofToString(diff), 10, 270);
+    font.drawString("Elapsed Time : " + ofToString(getElapsedTime()), 10, 300);
     reset();
 }
 
@@ -277,25 +285,42 @@ void ofApp::changeGraphicIfNeeded() {
             diff = lastAzimuth - azimuth;
             changeDelay = 0;
 
-            if (diff > 0) {
-                graphicId++;
-                if (imageRefs.size() <= graphicId) {
-                    graphicId = 0;
-                }
-            } else {
-                graphicId--;
-                if (graphicId < 0) {
-                    graphicId = imageRefs.size() - 1;
-                }
-            }
-            reset();
-            img.clear();
-            img.load(imageRefs[graphicId]);
-            createItems();
+            changeGraphic(diff > 0);
         }
         lastAzimuth = azimuth;
         counter = 0;
     }
+}
+
+void ofApp::changeGraphic(bool changetoNext) {
+    if (changetoNext) {
+        graphicId++;
+        if (imageRefs.size() <= graphicId) {
+            graphicId = 0;
+        }
+    } else {
+        graphicId--;
+        if (graphicId < 0) {
+            graphicId = imageRefs.size() - 1;
+        }
+    }
+    reset();
+    img.clear();
+    img.load(imageRefs[graphicId]);
+    createItems();
+    resetTime();
+}
+
+void ofApp::resetTime() {
+    startTime = ofGetElapsedTimeMillis();
+}
+
+bool ofApp::hasTimePassed() {
+    return getElapsedTime() > timeUntilChangeGraphic;
+}
+
+int ofApp::getElapsedTime() {
+    return ofGetElapsedTimeMillis() - startTime;
 }
 
 /**
