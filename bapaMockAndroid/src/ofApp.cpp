@@ -29,7 +29,7 @@ void ofApp::setup(){
     stiffness = 0.1;
     damping = 0.85;
     counter = changeDelay = lastAzimuth = diff = 0;
-    timeUntilChangeGraphic = 10 * 1000;
+    timeUntilChangeGraphic = 30 * 1000;
 
     resetTime();
     createItems();
@@ -37,9 +37,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    if (hasTimePassed()) {
-        changeGraphic(true);
-    }
+    // For Exhibition.
+    // if (hasTimePassed()) {
+    //     changeGraphic(true);
+    // }
 
     accel = ofxAccelerometer.getForce();
     normAccel = accel.getNormalized();
