@@ -19,10 +19,10 @@ void ofApp::setup(){
     imageRefs.push_back("images/fish_100_0.png");
     imageRefs.push_back("images/fish_100_1.png");
     imageRefs.push_back("images/fish_100_2.png");
-    imageRefs.push_back("images/fish_100_3.png");
     imageRefs.push_back("images/fish_100_4.png");
     imageRefs.push_back("images/cone_80_1.png");
     imageRefs.push_back("images/eye_57_1.png");
+    imageRefs.push_back("images/fish_100_3.png");
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
@@ -88,6 +88,7 @@ void ofApp::draw(){
     font.drawString("Counter : " + ofToString(counter), 10, 240);
     font.drawString("Diff : " + ofToString(diff), 10, 270);
     font.drawString("Elapsed Time : " + ofToString(getElapsedTime()), 10, 300);
+    font.drawString("Graphic Id : " + ofToString(graphicId), 10, 330);
     reset();
 }
 
@@ -189,10 +190,10 @@ void ofApp::locationChanged(ofxLocation& location) {
 }
 
 void ofApp::createItems() {
-    if (graphicId == 2) {
+    if (graphicId == 1) {
         createBorderItems();
 
-    } else if (graphicId == 3) {
+    } else if (graphicId == 2) {
         createRippleItems();
 
     } else {
@@ -280,7 +281,7 @@ void ofApp::changeGraphicIfNeeded() {
 
     if (counter > 20) {
         float azimuth = getAzimuth();
-        float absDiff = ABS(lastAzimuth - azimuth);
+        float absDiff = ABS(azimuth - lastAzimuth);
 
         if (absDiff > 30 && absDiff < 150 && changeDelay > 100) {
             diff = lastAzimuth - azimuth;
@@ -430,5 +431,5 @@ float ofApp::getAzimuth() {
 
     float val = _env->CallFloatMethod(_ofActivityObject, javaGetIdMethod);
 
-    return val;
+    return ofMap(val, -180, 180, 0, 360);
 }
