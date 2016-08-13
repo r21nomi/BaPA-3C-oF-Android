@@ -79,6 +79,11 @@ class ofApp : public ofxAndroidApp{
             void resetTime();
             int getElapsedTime();
 
+            int INTERVAL_OFFSET = 20;
+            int AZIMUTH_DIFF_OFFSET = 40;
+            float ACCEL_OFFSET = 0.4;
+            int CHANGE_DELAY_OFFSET = 100;
+
             JNIEnv* env;
             jclass ofActivityClass;
             jobject ofActivityObject;
@@ -92,13 +97,14 @@ class ofApp : public ofxAndroidApp{
             ofPoint dummyLocation;
             ofPoint velocity;
             ofVec3f accel, normAccel;
+            float normAccelX, normAccelY;
             float latitude, longitude, speed;
             ofTrueTypeFont font;
             int graphicId;
-            int counter;
+            int interval;
             int changeDelay;
             float lastAzimuth;
-            float diff;
+            float azimuthDiff;
             int startTime;
             int timeUntilChangeGraphic;
 };

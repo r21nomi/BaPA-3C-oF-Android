@@ -19,17 +19,18 @@ void ofApp::setup(){
     imageRefs.push_back("images/fish_100_0.png");
     imageRefs.push_back("images/fish_100_1.png");
     imageRefs.push_back("images/fish_100_2.png");
+    imageRefs.push_back("images/fish_100_3.png");
     imageRefs.push_back("images/fish_100_4.png");
     imageRefs.push_back("images/cone_80_1.png");
     imageRefs.push_back("images/eye_57_1.png");
-    imageRefs.push_back("images/fish_100_3.png");
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
     stiffness = 0.1;
     damping = 0.85;
-    counter = changeDelay = lastAzimuth = diff = 0;
+    interval = changeDelay = lastAzimuth = azimuthDiff = 0;
     timeUntilChangeGraphic = 30 * 1000;
+    normAccelX = normAccelY = 0;
 
     resetTime();
     createItems();
@@ -51,21 +52,23 @@ void ofApp::update(){
     velocity.y = getVelocity(destination.y, dummyLocation.y, velocity.y);
     dummyLocation.y += velocity.y;
 
+    // Use Z axis to make the origin the state of standing.
+    normAccelX = normAccel.y * 2.5;
+    normAccelY = normAccel.z * 2.5 * -1;
+
+    if (normAccelX > 1) {
+        normAccelX = 1;
+    } else if (normAccelX < -1) {
+        normAccelX = -1;
+    }
+    if (normAccelY > 1) {
+        normAccelY = 1;
+    } else if (normAccelY < -1) {
+        normAccelY = -1;
+    }
+
     for (Item *particle : particles) {
-        // Use Z axis to make the origin the state of standing.
-        float accelX = normAccel.x * 2.5;
-        float accelY = normAccel.z * 2.5 * -1;
-        if (accelX > 1) {
-            accelX = 1;
-        } else if (accelX < -1) {
-            accelX = -1;
-        }
-        if (accelY > 1) {
-            accelY = 1;
-        } else if (accelY < -1) {
-            accelY = -1;
-        }
-        particle->update(dummyLocation.x, dummyLocation.y, accelX, accelY);
+        particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
     }
 
     changeGraphicIfNeeded();
@@ -85,8 +88,8 @@ void ofApp::draw(){
     font.drawString("longitude : " + ofToString(longitude), 10, 150);
     font.drawString("speed : " + ofToString(speed), 10, 180);
     font.drawString("getAzimuth : " + ofToString(getAzimuth()), 10, 210);
-    font.drawString("Counter : " + ofToString(counter), 10, 240);
-    font.drawString("Diff : " + ofToString(diff), 10, 270);
+    font.drawString("Interval : " + ofToString(interval), 10, 240);
+    font.drawString("AzimuthDiff : " + ofToString(azimuthDiff), 10, 270);
     font.drawString("Elapsed Time : " + ofToString(getElapsedTime()), 10, 300);
     font.drawString("Graphic Id : " + ofToString(graphicId), 10, 330);
     reset();
@@ -205,7 +208,7 @@ void ofApp::createItems() {
             for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
                 Item *particle;
 
-                if (graphicId == 1) {
+                if (graphicId == 3) {
                     particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
                 } else {
                     particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
@@ -276,21 +279,27 @@ void ofApp::setGraphicId() {
 }
 
 void ofApp::changeGraphicIfNeeded() {
-    counter++;
+    interval++;
     changeDelay++;
 
-    if (counter > 20) {
+    if (interval > INTERVAL_OFFSET) {
+        // Check at regular intervals.
         float azimuth = getAzimuth();
         float absDiff = ABS(azimuth - lastAzimuth);
 
-        if (absDiff > 30 && absDiff < 150 && changeDelay > 100) {
-            diff = lastAzimuth - azimuth;
+        if (absDiff > AZIMUTH_DIFF_OFFSET
+            && absDiff < 360 - AZIMUTH_DIFF_OFFSET
+            && changeDelay > CHANGE_DELAY_OFFSET
+            && ABS(normAccelX) < ACCEL_OFFSET
+            && ABS(normAccelY) < ACCEL_OFFSET) {
+            // Change graphic.
+            azimuthDiff = lastAzimuth - azimuth;
             changeDelay = 0;
 
-            changeGraphic(diff > 0);
+            changeGraphic(azimuthDiff > 0);
         }
         lastAzimuth = azimuth;
-        counter = 0;
+        interval = 0;
     }
 }
 
@@ -431,5 +440,5 @@ float ofApp::getAzimuth() {
 
     float val = _env->CallFloatMethod(_ofActivityObject, javaGetIdMethod);
 
-    return ofMap(val, -180, 180, 0, 360);
+    return val;
 }
