@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +26,11 @@ public class OFActivity extends cc.openframeworks.OFActivity{
     private SensorManager mSensorManager = null;
     private SensorEventListener mSensorEventListener = null;
 
-    private float[] fAccell = null;
-    private float[] fMagnetic = null;
-    private float azimuth;
-    private float pitch;
-    private float roll;
+    private float[] mAccelerometerReading = null;
+    private float[] mMagnetometerReading = null;
+    private float mAzimuth;
+    private float mPitch;
+    private float mRoll;
 
     public static Intent createIntent(Context context, int id) {
         Intent intent = new Intent(context, OFActivity.class);
@@ -156,7 +157,7 @@ public class OFActivity extends cc.openframeworks.OFActivity{
 
     // This will be called from oF.
     public float getAzimuth() {
-        return azimuth;
+        return mAzimuth;
     }
 
     private void initSensor() {
@@ -167,41 +168,46 @@ public class OFActivity extends cc.openframeworks.OFActivity{
             public void onSensorChanged (SensorEvent event) {
                 switch (event.sensor.getType()) {
                     case Sensor.TYPE_ACCELEROMETER:
-                        fAccell = event.values.clone();
+                        mAccelerometerReading = event.values.clone();
                         break;
+
                     case Sensor.TYPE_MAGNETIC_FIELD:
-                        fMagnetic = event.values.clone();
+                        mMagnetometerReading = event.values.clone();
                         break;
                 }
 
-                if (fAccell != null && fMagnetic != null) {
+                if (mAccelerometerReading != null && mMagnetometerReading != null) {
                     // Get RotationMatrix
                     float[] inR = new float[9];
                     SensorManager.getRotationMatrix(
                             inR,
                             null,
-                            fAccell,
-                            fMagnetic
+                            mAccelerometerReading,
+                            mMagnetometerReading
                     );
 
-                    // ワールド座標とデバイス座標のマッピングを変換する
+                    // Set world's coordinate system with device's one.
+                    // See this article in detail.
+                    // http://blogs.yahoo.co.jp/count_zero_blog/62278295.html
                     float[] outR = new float[9];
                     SensorManager.remapCoordinateSystem(
                             inR,
-                            SensorManager.AXIS_X, SensorManager.AXIS_Y,
+                            SensorManager.AXIS_X, SensorManager.AXIS_Z,
                             outR
                     );
 
-                    // 姿勢を得る
+                    // Get orientation.
                     float[] fAttitude = new float[3];
                     SensorManager.getOrientation(
                             outR,
                             fAttitude
                     );
 
-                    azimuth = rad2deg(fAttitude[0]);
-                    pitch = rad2deg(fAttitude[1]);
-                    roll = rad2deg(fAttitude[2]);
+                    mAzimuth = rad2deg(fAttitude[0]);
+                    mPitch = rad2deg(fAttitude[1]);
+                    mRoll = rad2deg(fAttitude[2]);
+
+                    Log.d("sensor", "azimuth : " + mAzimuth + " , pitch : " + mPitch + ", roll : " + mRoll);
                 }
             }
 
@@ -213,6 +219,6 @@ public class OFActivity extends cc.openframeworks.OFActivity{
     }
 
     private float rad2deg(float rad) {
-        return rad * (float) 180.0 / (float) Math.PI;
+        return (float) (Math.toDegrees(rad) + 360) % 360;
     }
 }
