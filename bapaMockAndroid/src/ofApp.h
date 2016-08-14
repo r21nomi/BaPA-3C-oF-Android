@@ -6,6 +6,8 @@
 #include "Fish.hpp"
 #include "Border.hpp"
 #include "Ripple.hpp"
+#include "Gear.hpp"
+#include "GearController.hpp"
 #include "ofxAccelerometer.h"
 
 #include "ofxAndroidGPS.h"
@@ -65,6 +67,7 @@ class ofApp : public ofxAndroidApp{
             void createItems();
             void createBorderItems();
             void createRippleItems();
+            void createGearItems();
             float getVelocity(float destination, float location, float velocity);
             void setGraphicId();
             int getId();
@@ -88,7 +91,7 @@ class ofApp : public ofxAndroidApp{
             jclass ofActivityClass;
             jobject ofActivityObject;
 
-            vector <Item*> particles;
+            vector<Item*> particles;
             vector<string> imageRefs;
             ofImage img;
             float stiffness;
@@ -107,4 +110,5 @@ class ofApp : public ofxAndroidApp{
             float azimuthDiff;
             int startTime;
             int timeUntilChangeGraphic;
+            GearController* gearController;
 };

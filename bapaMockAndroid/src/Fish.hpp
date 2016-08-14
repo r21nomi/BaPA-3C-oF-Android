@@ -28,6 +28,4 @@ class Fish : public Item {
         float bounceVelocity;
 };
 
-
-
 #endif //BAPAMOCKANDROID_FISH_H
