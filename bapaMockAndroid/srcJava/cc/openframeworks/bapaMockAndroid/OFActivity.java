@@ -41,6 +41,7 @@ public class OFActivity extends cc.openframeworks.OFActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         String packageName = getPackageName();
 
         id = getIntent().getIntExtra(ID, -1);

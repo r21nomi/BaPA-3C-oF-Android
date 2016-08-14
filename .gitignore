@@ -31,6 +31,9 @@ proguard/
 !.idea/codeStyleSettings.xml
 *.iml
 
+# Fabric
+fabric.properties
+
 # Eclipse
 .classpath
 .settings

@@ -5,11 +5,8 @@
     android:versionName="1.0"
     android:installLocation="preferExternal">
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -39,6 +36,10 @@
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape">
         </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="92f3d9a88050449907c2b02ecb11e402923f8448" />
     </application>
 
 </manifest>

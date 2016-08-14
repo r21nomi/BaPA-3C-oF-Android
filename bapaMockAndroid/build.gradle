@@ -3,6 +3,7 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         // Error will happen if you update gradle version to 2.0 or higher.
@@ -12,6 +13,7 @@ buildscript {
         // in the individual module build.gradle files
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
@@ -24,6 +26,7 @@ allprojects {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.fabric'
 
 ext {
     COMPILE_SDK_VERSION = 23
@@ -69,6 +72,7 @@ android {
 repositories {
     mavenCentral()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
@@ -78,6 +82,9 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
+        transitive = true;
+    }
 }
 
 clean.dependsOn(":openFrameworksProject:clean")
