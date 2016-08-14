@@ -31,6 +31,7 @@ void ofApp::setup(){
     interval = changeDelay = lastAzimuth = azimuthDiff = 0;
     timeUntilChangeGraphic = 30 * 1000;
     normAccelX = normAccelY = 0;
+    gearController = new GearController();
 
     resetTime();
     createItems();
@@ -67,8 +68,17 @@ void ofApp::update(){
         normAccelY = -1;
     }
 
-    for (Item *particle : particles) {
-        particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
+    if (particles[0] != NULL && dynamic_cast<Gear*>(particles[0])) {
+        // Gear.
+        gearController->update(normAccelX, normAccelY);
+
+    } else {
+        // Other graphic.
+        int count = 0;
+        for (Item *particle : particles) {
+            particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
+            count++;
+        }
     }
 
     changeGraphicIfNeeded();
@@ -92,11 +102,12 @@ void ofApp::draw(){
     font.drawString("AzimuthDiff : " + ofToString(azimuthDiff), 10, 270);
     font.drawString("Elapsed Time : " + ofToString(getElapsedTime()), 10, 300);
     font.drawString("Graphic Id : " + ofToString(graphicId), 10, 330);
+
     reset();
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed  (int key){
+void ofApp::keyPressed(int key){
 
 }
 
@@ -193,34 +204,42 @@ void ofApp::locationChanged(ofxLocation& location) {
 }
 
 void ofApp::createItems() {
-    if (graphicId == 1) {
-        createBorderItems();
+    switch (graphicId) {
+        case 1:
+            createBorderItems();
+            break;
 
-    } else if (graphicId == 2) {
-        createRippleItems();
+        case 2:
+            createRippleItems();
+            break;
 
-    } else {
-        particles.clear();
+        case 3:
+            createGearItems();
+            break;
 
-        float width = 100;
-        float margin = 0;
-        for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
-            for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
-                Item *particle;
+        default:
+            particles.clear();
 
-                if (graphicId == 3) {
-                    particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
-                } else {
-                    particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
-                }
+            float width = 100;
+            float margin = 0;
+            for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
+                for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
+                    Item *particle;
 
-                float dist = ofDist(particle->getLocation().x, particle->getLocation().y, ofGetWidth() / 2, ofGetHeight() / 2);
+                    if (graphicId == 3) {
+                        particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
+                    } else {
+                        particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
+                    }
 
-                if (dist < ofGetHeight() / 2) {
-                    particles.push_back(particle);
+                    float dist = ofDist(particle->getLocation().x, particle->getLocation().y, ofGetWidth() / 2, ofGetHeight() / 2);
+
+                    if (dist < ofGetHeight() / 2) {
+                        particles.push_back(particle);
+                    }
                 }
             }
-        }
+            break;
     }
 }
 
@@ -265,6 +284,31 @@ void ofApp::createRippleItems() {
         );
         particles.push_back(ripple);
     }
+}
+
+/**
+ * Gear
+ */
+void ofApp::createGearItems() {
+    particles.clear();
+
+    int diameter = 100;
+    int bold = 20;
+    int margin = 30;
+
+    for (int x = 0, width = ofGetWidth(); x < width; x += (diameter + margin)) {
+        for (int y = 0, height = ofGetHeight(); y < height; y += (diameter + margin)) {
+            Gear *gear = new Gear(
+                ofPoint(x, y),
+                diameter,
+                bold,
+                4
+            );
+            Item *item = gear;
+            particles.push_back(item);
+        }
+    }
+    gearController->setItems(particles);
 }
 
 float ofApp::getVelocity(float destination, float location, float velocity) {

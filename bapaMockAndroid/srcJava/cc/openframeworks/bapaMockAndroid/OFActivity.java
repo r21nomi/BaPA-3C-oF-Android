@@ -208,7 +208,7 @@ public class OFActivity extends cc.openframeworks.OFActivity{
                     mPitch = rad2deg(fAttitude[1]);
                     mRoll = rad2deg(fAttitude[2]);
 
-                    Log.d("sensor", "azimuth : " + mAzimuth + " , pitch : " + mPitch + ", roll : " + mRoll);
+                    Log.v("sensor", "azimuth : " + mAzimuth + " , pitch : " + mPitch + ", roll : " + mRoll);
                 }
             }
 
