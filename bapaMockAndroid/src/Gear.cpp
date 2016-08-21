@@ -12,7 +12,7 @@ Gear::Gear(ofPoint _pos, float _diameter, float _bold, int _polygonalNumber) {
     angle = 0;
     startTime = 0;
     canRotate = true;
-    color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255), 60);
+    color = ofColor(ofRandom(255), ofRandom(255), ofRandom(255));
 }
 
 void Gear::update(float x, float y, float velocityX, float velocityY) {

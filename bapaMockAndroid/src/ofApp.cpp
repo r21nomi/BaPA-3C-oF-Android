@@ -26,6 +26,10 @@ void ofApp::setup(){
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
+    head.load("images/fish/fish_0.png");
+    body.load("images/fish/fish_1.png");
+    tail.load("images/fish/fish_2.png");
+
     stiffness = 0.1;
     damping = 0.85;
     interval = changeDelay = lastAzimuth = azimuthDiff = 0;
@@ -222,12 +226,17 @@ void ofApp::createItems() {
 
             float width = 100;
             float margin = 0;
+
             for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
                 for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
                     Item *particle;
 
                     if (graphicId == 3) {
                         particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
+
+                    } else if (graphicId == 4) {
+                        particle = new Fish2(&head, &body, &tail, ofPoint(i * (width + margin), j * (width + margin)));
+
                     } else {
                         particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
                     }

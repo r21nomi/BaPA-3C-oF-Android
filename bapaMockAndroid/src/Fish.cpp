@@ -50,7 +50,6 @@ void Fish::update(float x, float y, float velocityX, float velocityY) {
 }
 
 void Fish::draw() {
-    ofSetColor(255, 255, 0, 60);
     ofPushMatrix();
 
     ofTranslate(pos.x, pos.y);

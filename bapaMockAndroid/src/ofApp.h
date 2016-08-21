@@ -9,6 +9,7 @@
 #include "Gear.hpp"
 #include "GearController.hpp"
 #include "ofxAccelerometer.h"
+#include "Fish2.hpp"
 
 #include "ofxAndroidGPS.h"
 #include "ofxAndroidUtils.h"
@@ -111,4 +112,7 @@ class ofApp : public ofxAndroidApp{
             int startTime;
             int timeUntilChangeGraphic;
             GearController* gearController;
+            ofImage head;
+            ofImage body;
+            ofImage tail;
 };
