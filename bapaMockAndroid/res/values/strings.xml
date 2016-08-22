@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="resource_root" translatable="false">android.resource://%s/</string>
-
-    <string name="app_name">BaPA Mock</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">PATTERNBRELLA</string>
     <string name="menu_settings">Settings</string>
-
 </resources>

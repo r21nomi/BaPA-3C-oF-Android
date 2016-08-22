@@ -1,5 +1,7 @@
 package cc.openframeworks.bapaMockAndroid
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -12,6 +14,13 @@ import java.util.*
  * Created by Ryota Niinomi on 2016/07/17.
  */
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        fun createIntent(context: Context): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            return intent
+        }
+    }
 
     var adapter : GraphicItemAdapter? = null;
 
