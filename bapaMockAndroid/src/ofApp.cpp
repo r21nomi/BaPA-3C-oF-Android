@@ -301,8 +301,8 @@ void ofApp::createRippleItems() {
 void ofApp::createGearItems() {
     particles.clear();
 
-    int diameter = 100;
-    int bold = 20;
+    int diameter = 150;
+    int bold = 30;
     int margin = 30;
 
     for (int x = 0, width = ofGetWidth(); x < width; x += (diameter + margin)) {
