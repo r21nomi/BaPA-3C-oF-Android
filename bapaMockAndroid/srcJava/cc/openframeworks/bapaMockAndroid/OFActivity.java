@@ -161,6 +161,10 @@ public class OFActivity extends cc.openframeworks.OFActivity{
         return mAzimuth;
     }
 
+    public boolean isDebugMode() {
+        return PrefUtil.Companion.isDebugMode(getApplicationContext());
+    }
+
     private void initSensor() {
         mSensorManager = (SensorManager) getSystemService( Context.SENSOR_SERVICE );
 

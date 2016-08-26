@@ -3,9 +3,9 @@ package cc.openframeworks.bapaMockAndroid
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.crashlytics.android.Crashlytics
+import com.nomi.artwatch.ui.activity.DrawerActivity
 import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.main_activity.*
 import java.util.*
@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Created by Ryota Niinomi on 2016/07/17.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : DrawerActivity() {
 
     companion object {
         fun createIntent(context: Context): Intent {
@@ -30,12 +30,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override val layout: Int get() = R.layout.main_activity
+    override val toolbarName: Int get() = R.string.app_name
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         Fabric.with(this, Crashlytics())
-
-        setContentView(R.layout.main_activity)
 
         adapter = GraphicItemAdapter(createDataSet(), listener)
 

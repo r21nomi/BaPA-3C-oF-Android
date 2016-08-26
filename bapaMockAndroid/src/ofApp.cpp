@@ -94,18 +94,20 @@ void ofApp::draw(){
         particle->draw();
     }
 
-    ofSetColor(255, 255, 255);
-    font.drawString("x : " + ofToString(normAccel.x), 10, 30);
-    font.drawString("y : " + ofToString(normAccel.y), 10, 60);
-    font.drawString("z : " + ofToString(normAccel.z), 10, 90);
-    font.drawString("latitude : " + ofToString(latitude), 10, 120);
-    font.drawString("longitude : " + ofToString(longitude), 10, 150);
-    font.drawString("speed : " + ofToString(speed), 10, 180);
-    font.drawString("getAzimuth : " + ofToString(getAzimuth()), 10, 210);
-    font.drawString("Interval : " + ofToString(interval), 10, 240);
-    font.drawString("AzimuthDiff : " + ofToString(azimuthDiff), 10, 270);
-    font.drawString("Elapsed Time : " + ofToString(getElapsedTime()), 10, 300);
-    font.drawString("Graphic Id : " + ofToString(graphicId), 10, 330);
+    if (isDebugMode()) {
+        ofSetColor(255, 255, 255);
+        font.drawString("x : " + ofToString(normAccel.x), 10, 30);
+        font.drawString("y : " + ofToString(normAccel.y), 10, 60);
+        font.drawString("z : " + ofToString(normAccel.z), 10, 90);
+        font.drawString("latitude : " + ofToString(latitude), 10, 120);
+        font.drawString("longitude : " + ofToString(longitude), 10, 150);
+        font.drawString("speed : " + ofToString(speed), 10, 180);
+        font.drawString("getAzimuth : " + ofToString(getAzimuth()), 10, 210);
+        font.drawString("Interval : " + ofToString(interval), 10, 240);
+        font.drawString("AzimuthDiff : " + ofToString(azimuthDiff), 10, 270);
+        font.drawString("Elapsed Time : " + ofToString(getElapsedTime()), 10, 300);
+        font.drawString("Graphic Id : " + ofToString(graphicId), 10, 330);
+    }
 
     reset();
 }
@@ -492,6 +494,23 @@ float ofApp::getAzimuth() {
     }
 
     float val = _env->CallFloatMethod(_ofActivityObject, javaGetIdMethod);
+
+    return val;
+}
+
+bool ofApp::isDebugMode() {
+    JNIEnv *_env = getEnv();
+    jclass _ofActivityClass = getOFActivityClass(_env);
+    jobject _ofActivityObject = getOFActivityObject(_env);
+
+    // Find getId method from OFActivity.
+    jmethodID javaGetIdMethod = _env->GetMethodID(_ofActivityClass, "isDebugMode","()Z");
+    if(!javaGetIdMethod){
+        ofLogError() << "Couldn't get java getId from OFActivity." << endl;
+        return -1;
+    }
+
+    float val = _env->CallBooleanMethod(_ofActivityObject, javaGetIdMethod);
 
     return val;
 }

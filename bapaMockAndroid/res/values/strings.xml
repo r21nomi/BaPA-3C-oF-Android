@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="resource_root" translatable="false">android.resource://%s/</string>
-    <string name="app_name">PATTERNBRELLA</string>
-    <string name="menu_settings">Settings</string>
+    <string name="app_name" translatable="false">PATTERNBRELLA</string>
+    <string name="menu_debug_mode" translatable="false">Debug Mode</string>
 </resources>
