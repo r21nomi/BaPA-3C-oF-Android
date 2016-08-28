@@ -13,7 +13,7 @@ class ResourceUtil {
         }
 
         fun getResourceAsUri(context: Context, res: Int): Uri {
-            return Uri.parse(getRoot(context) + res);
+            return Uri.parse(getRoot(context) + res)
         }
 
         fun getGrapicItemDrawableAsUri(context: Context, identifier: String) : Uri {
@@ -22,7 +22,7 @@ class ResourceUtil {
         }
 
         fun getDrawableRes(context: Context, prefix: String, identifier: String) : Int {
-            return context.getResources().getIdentifier(prefix + identifier, "drawable", context.getPackageName());
+            return context.getResources().getIdentifier(prefix + identifier, "drawable", context.getPackageName())
         }
     }
 }
