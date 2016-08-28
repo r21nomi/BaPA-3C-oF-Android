@@ -9,6 +9,10 @@ import android.support.v7.app.AppCompatActivity
  */
 class SplashActivity : AppCompatActivity() {
 
+    companion object {
+        val LAUNCH_DELAY : Long = 1000
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -17,6 +21,6 @@ class SplashActivity : AppCompatActivity() {
         Handler().postDelayed({
             startActivity(MainActivity.createIntent(this@SplashActivity))
             finish()
-        }, 2000)
+        }, LAUNCH_DELAY)
     }
 }

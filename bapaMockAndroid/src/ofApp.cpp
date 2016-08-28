@@ -16,26 +16,33 @@ void ofApp::setup(){
 
     setGraphicId();
 
-    imageRefs.push_back("images/fish_100_0.png");
     imageRefs.push_back("images/fish_100_1.png");
     imageRefs.push_back("images/fish_100_2.png");
     imageRefs.push_back("images/fish_100_3.png");
-    imageRefs.push_back("images/fish_100_4.png");
     imageRefs.push_back("images/cone_80_1.png");
     imageRefs.push_back("images/eye_57_1.png");
+    imageRefs.push_back("images/fish_100_4.png");
+    imageRefs.push_back("images/fish_100_5.png");
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
-    head.load("images/fish/fish_0.png");
-    body.load("images/fish/fish_1.png");
-    tail.load("images/fish/fish_2.png");
+    fishImagePaths.push_back("images/fish/fish_head_1.png");
+    fishImagePaths.push_back("images/fish/fish_body_1.png");
+    fishImagePaths.push_back("images/fish/fish_tail_1.png");
+
+    for (string path : fishImagePaths) {
+        ofImage image;
+        image.load(path);
+        fishImages.push_back(image);
+    }
 
     stiffness = 0.1;
     damping = 0.85;
     interval = changeDelay = lastAzimuth = azimuthDiff = 0;
-    timeUntilChangeGraphic = 30 * 1000;
+    timeUntilChangeGraphic = 5 * 1000;
     normAccelX = normAccelY = 0;
     gearController = new GearController();
+    setGraphicId(getId());
 
     resetTime();
     createItems();
@@ -43,10 +50,9 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    // For Exhibition.
-    // if (hasTimePassed()) {
-    //     changeGraphic(true);
-    // }
+    if (hasTimePassed(timeUntilChangeGraphic)) {
+        updateGraphic();
+    }
 
     accel = ofxAccelerometer.getForce();
     normAccel = accel.getNormalized();
@@ -210,16 +216,16 @@ void ofApp::locationChanged(ofxLocation& location) {
 }
 
 void ofApp::createItems() {
-    switch (graphicId) {
-        case 1:
+    switch (currentGraphic) {
+        case BORDER:
             createBorderItems();
             break;
 
-        case 2:
+        case RAIN:
             createRippleItems();
             break;
 
-        case 3:
+        case GEAR:
             createGearItems();
             break;
 
@@ -233,11 +239,8 @@ void ofApp::createItems() {
                 for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
                     Item *particle;
 
-                    if (graphicId == 3) {
-                        particle = new Particle(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
-
-                    } else if (graphicId == 4) {
-                        particle = new Fish2(&head, &body, &tail, ofPoint(i * (width + margin), j * (width + margin)));
+                    if (currentGraphic == FISH2) {
+                        particle = new Fish2(&fishImages[0], &fishImages[1], &fishImages[2], ofPoint(i * (width + margin), j * (width + margin)));
 
                     } else {
                         particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
@@ -328,9 +331,35 @@ float ofApp::getVelocity(float destination, float location, float velocity) {
 }
 
 void ofApp::setGraphicId() {
-    graphicId = getId();
+    setGraphicId(getId());
     reset();
     ofLog(OF_LOG_NOTICE, "ID : " + ofToString(graphicId));
+}
+
+void ofApp::setGraphicId(int id) {
+    graphicId = id;
+
+    switch (graphicId) {
+        case 1:
+            currentGraphic = BORDER;
+            break;
+
+        case 2:
+            currentGraphic = RAIN;
+            break;
+
+        case 3:
+            currentGraphic = GEAR;
+            break;
+
+        case 4:
+            currentGraphic = FISH2;
+            break;
+
+        default:
+            currentGraphic = FISH;
+            break;
+    }
 }
 
 void ofApp::changeGraphicIfNeeded() {
@@ -360,14 +389,14 @@ void ofApp::changeGraphicIfNeeded() {
 
 void ofApp::changeGraphic(bool changetoNext) {
     if (changetoNext) {
-        graphicId++;
+        setGraphicId(graphicId + 1);
         if (imageRefs.size() <= graphicId) {
-            graphicId = 0;
+            setGraphicId(0);
         }
     } else {
-        graphicId--;
+        setGraphicId(graphicId - 1);
         if (graphicId < 0) {
-            graphicId = imageRefs.size() - 1;
+            setGraphicId(imageRefs.size() - 1);
         }
     }
     reset();
@@ -377,12 +406,35 @@ void ofApp::changeGraphic(bool changetoNext) {
     resetTime();
 }
 
+void ofApp::updateGraphic() {
+    switch (graphicId) {
+        case FISH2:
+            for (int i = 0, len = fishImagePaths.size(); i < len; i++) {
+                string oldImagePath = fishImagePaths[i];
+                string newImagePath = GetUpdatedImagePath(oldImagePath);
+                fishImagePaths[i] = newImagePath;
+                fishImages[i].clear();
+                fishImages[i].load(fishImagePaths[i]);
+            }
+            break;
+
+        default:
+            string imagePath = imageRefs[graphicId];
+            string newImagePath = GetUpdatedImagePath(imagePath);
+            imageRefs[graphicId] = newImagePath;
+            img.clear();
+            img.load(imageRefs[graphicId]);
+            break;
+    }
+    resetTime();
+}
+
 void ofApp::resetTime() {
     startTime = ofGetElapsedTimeMillis();
 }
 
-bool ofApp::hasTimePassed() {
-    return getElapsedTime() > timeUntilChangeGraphic;
+bool ofApp::hasTimePassed(int time) {
+    return getElapsedTime() > time;
 }
 
 int ofApp::getElapsedTime() {
