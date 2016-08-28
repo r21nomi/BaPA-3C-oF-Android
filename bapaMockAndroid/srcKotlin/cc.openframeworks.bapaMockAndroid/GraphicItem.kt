@@ -5,8 +5,8 @@ package cc.openframeworks.bapaMockAndroid
  */
 class GraphicItem {
 
-    var id = 0;
-    var name = "";
+    var id = 0
+    var name = ""
 
     constructor(id: Int, name: String) {
         this.id = id

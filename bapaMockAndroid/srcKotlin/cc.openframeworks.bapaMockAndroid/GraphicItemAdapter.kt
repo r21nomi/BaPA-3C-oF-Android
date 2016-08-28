@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import butterknife.bindView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 
 /**
  * Created by Ryota Niinomi on 2016/07/18.
@@ -29,15 +30,16 @@ class GraphicItemAdapter(val dataSet : List<GraphicItem>, val listener : Listene
     class ViewHolder(view: View, val listener : Listener) : RecyclerView.ViewHolder(view) {
 
         val image: ImageView by bindView(R.id.image)
-        var graphicItem: GraphicItem = GraphicItem(-1, "");
+        var graphicItem: GraphicItem = GraphicItem(-1, "")
 
         fun bindItem(item : GraphicItem) {
-            val context = image.context;
+            val context = image.context
             Glide.with(context)
                     .load(ResourceUtil.getGrapicItemDrawableAsUri(context, item.id.toString()))
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(image)
 
-            graphicItem = item;
+            graphicItem = item
         }
 
         init {

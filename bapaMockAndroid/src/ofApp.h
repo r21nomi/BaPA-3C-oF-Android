@@ -10,6 +10,7 @@
 #include "GearController.hpp"
 #include "ofxAccelerometer.h"
 #include "Fish2.hpp"
+#include "Circle.hpp"
 
 #include "ofxAndroidGPS.h"
 #include "ofxAndroidUtils.h"
@@ -49,12 +50,15 @@ class ofApp : public ofxAndroidApp{
                 RAIN,
                 GEAR,
                 FISH,
-                FISH2
+                FISH2,
+                CIRCLE
             };
             void createItems();
             void createBorderItems();
             void createRippleItems();
             void createGearItems();
+            void createCircleItems();
+
             float getVelocity(float destination, float location, float velocity);
             void setGraphicId();
             void setGraphicId(int id);

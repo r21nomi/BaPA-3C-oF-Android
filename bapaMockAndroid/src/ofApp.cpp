@@ -82,6 +82,24 @@ void ofApp::update(){
         // Gear.
         gearController->update(normAccelX, normAccelY);
 
+    } else if (particles[0] != NULL && dynamic_cast<Circle*>(particles[0])) {
+        vector<Item*>::iterator it = particles.begin();
+        vector<Item*> items;
+        while (it != particles.end()) {
+            Circle *item = dynamic_cast<Circle*>(*it);
+            if (item->isOverRange()) {
+                it = particles.erase(it);
+                items.push_back(item);
+            } else {
+                ++it;
+            }
+        }
+        particles.insert(particles.end(), items.begin(), items.end());
+
+        for (Item *particle : particles) {
+            particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
+        }
+
     } else {
         // Other graphic.
         int count = 0;
@@ -229,6 +247,10 @@ void ofApp::createItems() {
             createGearItems();
             break;
 
+        case CIRCLE:
+            createCircleItems();
+            break;
+
         default:
             particles.clear();
 
@@ -325,6 +347,23 @@ void ofApp::createGearItems() {
     gearController->setItems(particles);
 }
 
+void ofApp::createCircleItems() {
+    particles.clear();
+
+    for (int i = 50, len = 50; i > 0; i -= 4) {
+        Circle *circle = new Circle(
+            ofPoint(ofGetWidth() / 2, ofGetHeight() / 2),
+            ofGetWidth() / len * i,
+            ofGetWidth() / len * i,
+            6,
+            ofGetWidth(),
+            ofColor(ofRandom(255), ofRandom(255), ofRandom(255))
+        );
+        Item *item = circle;
+        particles.push_back(item);
+    }
+}
+
 float ofApp::getVelocity(float destination, float location, float velocity) {
     float force = stiffness * (destination - location);
     return damping * (velocity + force);
@@ -354,6 +393,10 @@ void ofApp::setGraphicId(int id) {
 
         case 4:
             currentGraphic = FISH2;
+            break;
+
+        case 5:
+            currentGraphic = CIRCLE;
             break;
 
         default:

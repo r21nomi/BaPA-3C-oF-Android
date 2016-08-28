@@ -22,7 +22,7 @@ class MainActivity : DrawerActivity() {
         }
     }
 
-    var adapter : GraphicItemAdapter? = null;
+    var adapter : GraphicItemAdapter? = null
 
     val listener : GraphicItemAdapter.Listener = object : GraphicItemAdapter.Listener {
         override fun onClick(item: GraphicItem) {
@@ -51,6 +51,6 @@ class MainActivity : DrawerActivity() {
             list.add(GraphicItem(i, "example_" + i))
         }
 
-        return list;
+        return list
     }
 }
