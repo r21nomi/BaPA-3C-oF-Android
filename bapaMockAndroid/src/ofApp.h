@@ -54,6 +54,7 @@ class ofApp : public ofxAndroidApp{
                 CIRCLE
             };
             void createItems();
+            void createFish2Items();
             void createBorderItems();
             void createRippleItems();
             void createGearItems();
