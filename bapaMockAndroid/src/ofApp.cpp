@@ -251,6 +251,10 @@ void ofApp::createItems() {
             createCircleItems();
             break;
 
+        case FISH2:
+            createFish2Items();
+            break;
+
         default:
             particles.clear();
 
@@ -259,14 +263,7 @@ void ofApp::createItems() {
 
             for (int i = 0, wLen = ofGetWidth() / (width + margin); i < wLen; i++) {
                 for (int j = 0, hLen = ofGetHeight() / (width + margin); j < hLen; j++) {
-                    Item *particle;
-
-                    if (currentGraphic == FISH2) {
-                        particle = new Fish2(&fishImages[0], &fishImages[1], &fishImages[2], ofPoint(i * (width + margin), j * (width + margin)));
-
-                    } else {
-                        particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
-                    }
+                    Item *particle = new Fish(&img, ofPoint(i * (width + margin), j * (width + margin)), width);
 
                     float dist = ofDist(particle->getLocation().x, particle->getLocation().y, ofGetWidth() / 2, ofGetHeight() / 2);
 
@@ -302,6 +299,20 @@ void ofApp::createBorderItems() {
         currentYLen += bold;
     }
     random_shuffle(particles.begin(), particles.end());
+}
+
+void ofApp::createFish2Items() {
+    particles.clear();
+
+    for (int i = 0, len = 50; i < len; i++) {
+        Item *particle = new Fish2(
+            &fishImages[0],
+            &fishImages[1],
+            &fishImages[2],
+            ofPoint(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()))
+        );
+        particles.push_back(particle);
+    }
 }
 
 /**
