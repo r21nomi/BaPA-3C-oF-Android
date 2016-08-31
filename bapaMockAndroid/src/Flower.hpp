@@ -16,10 +16,20 @@ class Flower : public Item {
         virtual ofPoint getLocation();
 
     private:
+        float getVelocity(float _destination, float _location, float _velocity);
+        int getElapsedTime();
+        float STIFFNESS = 0.05;
+        float DAMPING = 0.75;
+
         ofImage *image;
         ofPoint pos;
         float width;
         float height;
+
+        int angle;
+        int startTime;
+        float velocity;
+        bool canRotate;
 };
 
 #endif //BAPAMOCKANDROID_FLOWER_H
