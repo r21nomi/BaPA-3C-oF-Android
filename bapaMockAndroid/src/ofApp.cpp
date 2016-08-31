@@ -26,20 +26,21 @@ void ofApp::setup(){
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
+    // Fish
     fishImagePaths.push_back("images/fish/fish_head_1.png");
     fishImagePaths.push_back("images/fish/fish_body_1.png");
     fishImagePaths.push_back("images/fish/fish_tail_1.png");
-
     for (string path : fishImagePaths) {
         ofImage image;
         image.load(path);
         fishImages.push_back(image);
     }
 
-    flowerImagePaths.push_back("images/eye/eye_1.png");
-    flowerImagePaths.push_back("images/eye/eye_2.png");
-    flowerImagePaths.push_back("images/eye/eye_3.png");
-
+    // Flower
+    flowerTypeCount = 10;
+    for (int i = 0; i < flowerTypeCount; i++) {
+        flowerImagePaths.push_back("images/flower/flower_" + ofToString(i + 1) + ".png");
+    }
     for (string path : flowerImagePaths) {
         ofImage image;
         image.load(path);
@@ -108,6 +109,16 @@ void ofApp::update(){
 
         for (Item *particle : particles) {
             particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
+        }
+    } else if (particles[0] != NULL && dynamic_cast<Flower*>(particles[0])) {
+        // Flower
+        for (Item *item : particles) {
+            Flower *flower = dynamic_cast<Flower*>(item);
+            if (abs(normAccelX) > 0.4 || abs(normAccelY) > 0.4) {
+                flower->update(normAccelX, normAccelY);
+            } else {
+                flower->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
+            }
         }
 
     } else {
@@ -350,7 +361,7 @@ void ofApp::createFlowerItems() {
     r[0] = maxRadius / 2;
     closestIndex[0] = 0;
 
-    for (int k = 0; k < 1500; k++) {
+    for (int k = 0; k < 2000; k++) {
         float newX = ofRandom(0 + maxRadius, ofGetWidth() - maxRadius);
         float newY = ofRandom(0 + maxRadius, ofGetHeight() - maxRadius);
         float newR = minRadius;
@@ -388,7 +399,7 @@ void ofApp::createFlowerItems() {
 
     for (int i = 0 ; i < currentCount; i++) {
         Item *item = new Flower(
-            &flowerImages[i % 3],
+            &flowerImages[i % flowerTypeCount],
             ofPoint((int)x[i], (int)y[i]),
             r[i] * 2,
             r[i] * 2

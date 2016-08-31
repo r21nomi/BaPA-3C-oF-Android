@@ -18,8 +18,8 @@ Flower::Flower(ofImage *_image, ofPoint _pos, float _width, float _height) {
 void Flower::update(float x, float y, float velocityX, float velocityY) {
     if (canRotate) {
         startTime = ofGetElapsedTimeMillis();
-        velocity = getVelocity(360, angle, velocity);
-        angle += velocity;
+        velocity.x = getVelocity(360, angle, velocity.x);
+        angle += velocity.x;
 
         if (angle > 350) {
             angle = 0;
@@ -29,6 +29,19 @@ void Flower::update(float x, float y, float velocityX, float velocityY) {
     if (getElapsedTime() > 3000) {
         canRotate = true;
     }
+}
+
+void Flower::update(float velocityX, float velocityY) {
+    int x = ofMap(velocityX, -1, 1, 0, ofGetWidth());
+    int y = ofMap(velocityY, -1, 1, 0, ofGetHeight());
+
+    velocity.x = getVelocity(x, dummyLocation.x, velocity.x);
+    dummyLocation.x += velocity.x;
+
+    velocity.y = getVelocity(y, dummyLocation.y, velocity.y);
+    dummyLocation.y += velocity.y;
+
+    angle = atan2(dummyLocation.y - ofGetHeight() / 2, dummyLocation.x - ofGetWidth() / 2) * 180.0 / PI;
 }
 
 void Flower::draw() {

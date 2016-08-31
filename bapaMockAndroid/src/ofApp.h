@@ -143,4 +143,5 @@ class ofApp : public ofxAndroidApp{
             int startTime;
             int timeUntilChangeGraphic;
             GearController* gearController;
+            int flowerTypeCount;
 };

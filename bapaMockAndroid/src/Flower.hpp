@@ -14,6 +14,7 @@ class Flower : public Item {
         virtual void update(float x, float y, float velocityX, float velocityY);
         virtual void draw();
         virtual ofPoint getLocation();
+        virtual void update(float velocityX, float velocityY);
 
     private:
         float getVelocity(float _destination, float _location, float _velocity);
@@ -28,8 +29,9 @@ class Flower : public Item {
 
         int angle;
         int startTime;
-        float velocity;
         bool canRotate;
+        ofPoint velocity;
+        ofPoint dummyLocation;
 };
 
 #endif //BAPAMOCKANDROID_FLOWER_H
