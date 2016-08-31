@@ -11,6 +11,7 @@
 #include "ofxAccelerometer.h"
 #include "Fish2.hpp"
 #include "Circle.hpp"
+#include "Flower.hpp"
 
 #include "ofxAndroidGPS.h"
 #include "ofxAndroidUtils.h"
@@ -51,7 +52,8 @@ class ofApp : public ofxAndroidApp{
                 GEAR,
                 FISH,
                 FISH2,
-                CIRCLE
+                CIRCLE,
+                FLOWER
             };
             void createItems();
             void createFish2Items();
@@ -59,6 +61,7 @@ class ofApp : public ofxAndroidApp{
             void createRippleItems();
             void createGearItems();
             void createCircleItems();
+            void createFlowerItems();
 
             float getVelocity(float destination, float location, float velocity);
             void setGraphicId();
@@ -120,6 +123,8 @@ class ofApp : public ofxAndroidApp{
             vector<string> imageRefs;
             vector<ofImage> fishImages;
             vector<string> fishImagePaths;
+            vector<ofImage> flowerImages;
+            vector<string> flowerImagePaths;
             ofImage img;
             float stiffness;
             float damping;

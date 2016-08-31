@@ -36,6 +36,16 @@ void ofApp::setup(){
         fishImages.push_back(image);
     }
 
+    flowerImagePaths.push_back("images/eye/eye_1.png");
+    flowerImagePaths.push_back("images/eye/eye_2.png");
+    flowerImagePaths.push_back("images/eye/eye_3.png");
+
+    for (string path : flowerImagePaths) {
+        ofImage image;
+        image.load(path);
+        flowerImages.push_back(image);
+    }
+
     stiffness = 0.1;
     damping = 0.85;
     interval = changeDelay = lastAzimuth = azimuthDiff = 0;
@@ -255,6 +265,10 @@ void ofApp::createItems() {
             createFish2Items();
             break;
 
+        case FLOWER:
+            createFlowerItems();
+            break;
+
         default:
             particles.clear();
 
@@ -312,6 +326,74 @@ void ofApp::createFish2Items() {
             ofPoint(ofRandom(ofGetWidth()), ofRandom(ofGetHeight()))
         );
         particles.push_back(particle);
+    }
+}
+
+/**
+ * Flower
+ */
+void ofApp::createFlowerItems() {
+    particles.clear();
+
+    int maxCount = 5000;
+    int currentCount = 1;
+    float x[maxCount];
+    float y[maxCount];
+    float r[maxCount];
+    int closestIndex[maxCount];
+
+    float minRadius = 5;
+    float maxRadius = 150;
+
+    x[0] = ofGetWidth() / 2;
+    y[0] = ofGetHeight() / 2;
+    r[0] = maxRadius / 2;
+    closestIndex[0] = 0;
+
+    for (int k = 0; k < 1500; k++) {
+        float newX = ofRandom(0 + maxRadius, ofGetWidth() - maxRadius);
+        float newY = ofRandom(0 + maxRadius, ofGetHeight() - maxRadius);
+        float newR = minRadius;
+
+        bool intersection = false;
+
+        for (int j = 0; j < currentCount; j++) {
+            float d = ofDist(newX, newY, x[j], y[j]);
+            if (d < (newR + r[j])) {
+                intersection = true;
+                break;
+            }
+        }
+
+        if (intersection == false) {
+            float newRadius = ofGetWidth();
+            for (int i = 0; i < currentCount; i++) {
+                float d = ofDist(newX, newY, x[i], y[i]);
+                if (newRadius > d - r[i]) {
+                    newRadius = d - r[i];
+                    closestIndex[currentCount] = i;
+                }
+            }
+
+            if (newRadius > maxRadius) {
+                newRadius = maxRadius;
+            }
+
+            x[currentCount] = newX;
+            y[currentCount] = newY;
+            r[currentCount] = newRadius;
+            currentCount++;
+        }
+    }
+
+    for (int i = 0 ; i < currentCount; i++) {
+        Item *item = new Flower(
+            &flowerImages[i % 3],
+            ofPoint((int)x[i], (int)y[i]),
+            r[i] * 2,
+            r[i] * 2
+        );
+        particles.push_back(item);
     }
 }
 
@@ -410,6 +492,10 @@ void ofApp::setGraphicId(int id) {
             currentGraphic = CIRCLE;
             break;
 
+        case 6:
+            currentGraphic = FLOWER;
+            break;
+
         default:
             currentGraphic = FISH;
             break;
@@ -470,6 +556,9 @@ void ofApp::updateGraphic() {
                 fishImages[i].clear();
                 fishImages[i].load(fishImagePaths[i]);
             }
+            break;
+
+        case FLOWER:
             break;
 
         default:
