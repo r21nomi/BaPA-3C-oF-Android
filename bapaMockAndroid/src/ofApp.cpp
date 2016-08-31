@@ -110,6 +110,16 @@ void ofApp::update(){
         for (Item *particle : particles) {
             particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
         }
+    } else if (particles[0] != NULL && dynamic_cast<Flower*>(particles[0])) {
+        // Flower
+        for (Item *item : particles) {
+            Flower *flower = dynamic_cast<Flower*>(item);
+            if (abs(normAccelX) > 0.4 || abs(normAccelY) > 0.4) {
+                flower->update(normAccelX, normAccelY);
+            } else {
+                flower->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
+            }
+        }
 
     } else {
         // Other graphic.
