@@ -23,6 +23,7 @@ void ofApp::setup(){
     imageRefs.push_back("images/eye_57_1.png");
     imageRefs.push_back("images/fish_100_4.png");
     imageRefs.push_back("images/fish_100_5.png");
+    imageRefs.push_back("images/fish_100_5.png");
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
@@ -123,10 +124,8 @@ void ofApp::update(){
 
     } else {
         // Other graphic.
-        int count = 0;
         for (Item *particle : particles) {
             particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
-            count++;
         }
     }
 
@@ -228,7 +227,7 @@ void ofApp::reloadTextures(){
     ofLog(OF_LOG_NOTICE, "reloadTextures");
     setGraphicId();
     img.clear();
-    img.load(imageRefs[graphicId]);
+    // img.load(imageRefs[graphicId]);
     createItems();
 }
 
@@ -283,6 +282,10 @@ void ofApp::createItems() {
 
         case FLOWER:
             createFlowerItems();
+            break;
+
+        case HEXAGON:
+            createHexagon();
             break;
 
         default:
@@ -456,6 +459,9 @@ void ofApp::createGearItems() {
     gearController->setItems(particles);
 }
 
+/**
+ * Circle
+ */
 void ofApp::createCircleItems() {
     particles.clear();
 
@@ -470,6 +476,29 @@ void ofApp::createCircleItems() {
         );
         Item *item = circle;
         particles.push_back(item);
+    }
+}
+
+/**
+ * Hexagon
+ */
+void ofApp::createHexagon() {
+    particles.clear();
+
+    ofColor colors[2] = {ofColor(255, 0, 0), ofColor(0, 0, 0)};
+    int diameter = 300;
+    int line = 0;
+    for (int x = 0, width = ofGetWidth() + diameter; x < width; x += diameter) {
+        for (int y = 0, height = ofGetHeight() + diameter * 2; y < height; y += diameter) {
+            line++;
+            int offset = line % 2 == 0 ? 0 : (diameter - diameter * 0.1) / 2;
+            Hexagon *item = new Hexagon(
+                ofPoint(x - (x * 0.1) + offset, y - (y * 0.224)),
+                diameter / 2,
+                (int)ofRandom(2) % 2 == 0 ? colors[0] : colors[1]
+            );
+            particles.push_back(item);
+        }
     }
 }
 
@@ -510,6 +539,10 @@ void ofApp::setGraphicId(int id) {
 
         case 6:
             currentGraphic = FLOWER;
+            break;
+
+        case 7:
+            currentGraphic = HEXAGON;
             break;
 
         default:
