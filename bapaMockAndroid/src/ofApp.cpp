@@ -135,6 +135,9 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    ofPushMatrix();
+    ofTranslate(0, 0);
+
     for (Item *particle : particles) {
         particle->draw();
     }
@@ -153,6 +156,8 @@ void ofApp::draw(){
         font.drawString("Elapsed Time : " + ofToString(getElapsedTime()), 10, 300);
         font.drawString("Graphic Id : " + ofToString(graphicId), 10, 330);
     }
+
+    ofPopMatrix();
 
     reset();
 }
