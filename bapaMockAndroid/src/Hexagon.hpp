@@ -10,17 +10,19 @@
 
 class Hexagon : public Item {
     public:
-        Hexagon(ofPoint _pos, float radius, ofColor color);
+        Hexagon(ofPoint pos, float radius, vector<ofColor> colors, int index, float velocity);
         virtual void update(float x, float y, float velocityX, float velocityY);
         virtual void draw();
         virtual ofPoint getLocation();
 
     private:
+        int getNextIndex();
         ofPoint pos;
-        ofPoint velocity;
         ofPoint dummyLocation;
-        ofColor color;
-        float radius;
+        vector<ofColor> colors;
+        int index;
+        float radius, defaultRadius;
+        float velocity;
 };
 
 #endif //BAPAMOCKANDROID_HEXAGON_H

@@ -485,17 +485,22 @@ void ofApp::createCircleItems() {
 void ofApp::createHexagon() {
     particles.clear();
 
-    ofColor colors[2] = {ofColor(255, 0, 0), ofColor(0, 0, 0)};
     int diameter = 300;
     int line = 0;
     for (int x = 0, width = ofGetWidth() + diameter; x < width; x += diameter) {
         for (int y = 0, height = ofGetHeight() + diameter * 2; y < height; y += diameter) {
+            vector<ofColor> colors;
+            colors.push_back(ofColor(230, 40, 100));
+            colors.push_back(ofColor(70, 190, 210));
+
             line++;
             int offset = line % 2 == 0 ? 0 : (diameter - diameter * 0.1) / 2;
             Hexagon *item = new Hexagon(
                 ofPoint(x - (x * 0.1) + offset, y - (y * 0.224)),
                 diameter / 2,
-                (int)ofRandom(2) % 2 == 0 ? colors[0] : colors[1]
+                colors,
+                (int)ofRandom(2) % 2 == 0 ? 0 : 1,
+                ofRandom(1, 3)
             );
             particles.push_back(item);
         }
