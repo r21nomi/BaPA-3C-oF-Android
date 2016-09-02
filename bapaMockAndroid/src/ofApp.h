@@ -12,6 +12,7 @@
 #include "Fish2.hpp"
 #include "Circle.hpp"
 #include "Flower.hpp"
+#include "Hexagon.hpp"
 
 #include "ofxAndroidGPS.h"
 #include "ofxAndroidUtils.h"
@@ -53,7 +54,8 @@ class ofApp : public ofxAndroidApp{
                 FISH,
                 FISH2,
                 CIRCLE,
-                FLOWER
+                FLOWER,
+                HEXAGON
             };
             void createItems();
             void createFish2Items();
@@ -62,6 +64,7 @@ class ofApp : public ofxAndroidApp{
             void createGearItems();
             void createCircleItems();
             void createFlowerItems();
+            void createHexagon();
 
             float getVelocity(float destination, float location, float velocity);
             void setGraphicId();

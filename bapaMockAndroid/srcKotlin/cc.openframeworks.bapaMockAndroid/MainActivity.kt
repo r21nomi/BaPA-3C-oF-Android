@@ -47,7 +47,7 @@ class MainActivity : DrawerActivity() {
     fun createDataSet() : List<GraphicItem> {
         var list : MutableList<GraphicItem> = ArrayList()
 
-        for (i in 0..10) {
+        for (i in 1..7) {
             list.add(GraphicItem(i, "example_" + i))
         }
 

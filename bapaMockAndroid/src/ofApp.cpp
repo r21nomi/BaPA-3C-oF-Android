@@ -23,6 +23,7 @@ void ofApp::setup(){
     imageRefs.push_back("images/eye_57_1.png");
     imageRefs.push_back("images/fish_100_4.png");
     imageRefs.push_back("images/fish_100_5.png");
+    imageRefs.push_back("images/fish_100_5.png");
     img.load(imageRefs[graphicId]);
     img.setAnchorPercent(0.5, 0.5);
 
@@ -123,10 +124,8 @@ void ofApp::update(){
 
     } else {
         // Other graphic.
-        int count = 0;
         for (Item *particle : particles) {
             particle->update(dummyLocation.x, dummyLocation.y, normAccelX, normAccelY);
-            count++;
         }
     }
 
@@ -228,7 +227,7 @@ void ofApp::reloadTextures(){
     ofLog(OF_LOG_NOTICE, "reloadTextures");
     setGraphicId();
     img.clear();
-    img.load(imageRefs[graphicId]);
+    // img.load(imageRefs[graphicId]);
     createItems();
 }
 
@@ -283,6 +282,10 @@ void ofApp::createItems() {
 
         case FLOWER:
             createFlowerItems();
+            break;
+
+        case HEXAGON:
+            createHexagon();
             break;
 
         default:
@@ -456,6 +459,9 @@ void ofApp::createGearItems() {
     gearController->setItems(particles);
 }
 
+/**
+ * Circle
+ */
 void ofApp::createCircleItems() {
     particles.clear();
 
@@ -470,6 +476,42 @@ void ofApp::createCircleItems() {
         );
         Item *item = circle;
         particles.push_back(item);
+    }
+}
+
+/**
+ * Hexagon
+ */
+void ofApp::createHexagon() {
+    particles.clear();
+
+    int diameter = 300;
+    int row = 0;
+    for (int x = 0, width = ofGetWidth() + diameter * 2; x < width; x += diameter) {
+        int line = 0;
+        row++;
+
+        for (int y = 0, height = ofGetHeight() + diameter * 2; y < height; y += diameter) {
+            vector<ofColor> colors;
+            colors.push_back(ofColor(230, 40, 100));
+            colors.push_back(ofColor(70, 190, 210));
+
+            line++;
+            // 対角線の距離
+            float diagonalDist = sqrt(3) * diameter / 4 * 2;
+            int verticalOffset = line % 2 == 0 ? 0 : diagonalDist / 2;
+            Hexagon *item = new Hexagon(
+                ofPoint(
+                    x - (diameter - diagonalDist) * row + verticalOffset,
+                    y - diagonalDist / (2 * sqrt(3)) * line
+                ),
+                diameter / 2,
+                colors,
+                (int)ofRandom(2) % 2 == 0 ? 0 : 1,
+                ofRandom(1, 3)
+            );
+            particles.push_back(item);
+        }
     }
 }
 
@@ -510,6 +552,10 @@ void ofApp::setGraphicId(int id) {
 
         case 6:
             currentGraphic = FLOWER;
+            break;
+
+        case 7:
+            currentGraphic = HEXAGON;
             break;
 
         default:
