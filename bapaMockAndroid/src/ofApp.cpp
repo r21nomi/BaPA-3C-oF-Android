@@ -486,17 +486,25 @@ void ofApp::createHexagon() {
     particles.clear();
 
     int diameter = 300;
-    int line = 0;
-    for (int x = 0, width = ofGetWidth() + diameter; x < width; x += diameter) {
+    int row = 0;
+    for (int x = 0, width = ofGetWidth() + diameter * 2; x < width; x += diameter) {
+        int line = 0;
+        row++;
+
         for (int y = 0, height = ofGetHeight() + diameter * 2; y < height; y += diameter) {
             vector<ofColor> colors;
             colors.push_back(ofColor(230, 40, 100));
             colors.push_back(ofColor(70, 190, 210));
 
             line++;
-            int offset = line % 2 == 0 ? 0 : (diameter - diameter * 0.1) / 2;
+            // 対角線の距離
+            float diagonalDist = sqrt(3) * diameter / 4 * 2;
+            int verticalOffset = line % 2 == 0 ? 0 : diagonalDist / 2;
             Hexagon *item = new Hexagon(
-                ofPoint(x - (x * 0.1) + offset, y - (y * 0.224)),
+                ofPoint(
+                    x - (diameter - diagonalDist) * row + verticalOffset,
+                    y - diagonalDist / (2 * sqrt(3)) * line
+                ),
                 diameter / 2,
                 colors,
                 (int)ofRandom(2) % 2 == 0 ? 0 : 1,

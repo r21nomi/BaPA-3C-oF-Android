@@ -34,6 +34,7 @@ void Ripple::draw() {
     ofPushMatrix();
 
     ofTranslate(pos.x, pos.y);
+    ofSetCircleResolution(50);
     ofDrawEllipse(0, 0, radius, radius);
 
     ofPopMatrix();

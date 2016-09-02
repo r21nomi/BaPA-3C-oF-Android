@@ -13,7 +13,8 @@ Hexagon::Hexagon(ofPoint _pos, float _radius, vector<ofColor> _colors, int _inde
 }
 
 void Hexagon::update(float x, float y, float velocityX, float velocityY) {
-    radius -= velocity;
+    float offset = pow((abs(velocityX) + abs(velocityY)) / 2 + 1, 2);
+    radius -= velocity * offset;
 
     if (radius <= 0) {
         radius = defaultRadius;

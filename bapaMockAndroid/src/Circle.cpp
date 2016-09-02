@@ -27,6 +27,7 @@ void Circle::draw() {
     ofSetColor(color);
     ofPushMatrix();
     ofTranslate(pos.x, pos.y);
+    ofSetCircleResolution(50);
     ofDrawEllipse(0, 0, width, height);
     ofPopMatrix();
 }
